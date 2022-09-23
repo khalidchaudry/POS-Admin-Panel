@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:simplecashier/view/screens/home_screen/widgets/rounded_button_widget.dart';
 
 class BottomWidget extends StatelessWidget {
-  const BottomWidget({super.key});
-
+  // const BottomWidget({super.key});
+bool loading=false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -12,8 +12,8 @@ class BottomWidget extends StatelessWidget {
         const Divider(thickness: 2,),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            RoundedButtonWidget(text: 'CLEAR', press: (){}, color: Colors.red),
-            RoundedButtonWidget(text: 'CHECK OUT', press: (){}, color: Colors.green),
+            RoundedButtonWidget(text: 'CLEAR', loading: loading,press: (){}, color: Colors.red,width: 160,height: 40,),
+            RoundedButtonWidget(text: 'CHECK OUT',loading: loading, press: (){}, color: Colors.green,width: 160,height: 40,),
           ],
         ),
         const SizedBox(height: 10,),

@@ -4,8 +4,15 @@ import 'package:simplecashier/view/screens/home_screen/widgets/drawer_widget.dar
 
 import '../../utils/utils.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -26,29 +33,34 @@ class HomeScreen extends StatelessWidget {
           ]),
           ),
             SizedBox(
-            height: MediaQuery.of(context).size.height*.8,
+            height: MediaQuery.of(context).size.height*.65,
              child: TabBarView(children: [
               
                            Column(
-                             children: const [
-                              Spacer(),
-                               BottomWidget(),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                             children:  [
+                              Image.asset(Images.noProduct,width: 200),
+                              const SizedBox(height: 10,),
+                              const Text('No Products',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.grey),),
                              ],
                            ),
 
 Column(
+  mainAxisAlignment: MainAxisAlignment.center,
   
                              children:  [
-                              const Spacer(),
+                         
                               Image.asset(Images.cart,width: 200,color: Colors.red,),
                               const SizedBox(height: 10,),
                               const Text('Empty Cart',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.grey),),
-                              const Spacer(),
-                               const BottomWidget(),
+                            
+                             
                              ],
                            ),           
                      ]),
-           )
+           ),
+                                       BottomWidget(),
+
         ],)),
       ),
       

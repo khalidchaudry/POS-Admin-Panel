@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplecashier/view/screens/add_items_screen/add_items_screen.dart';
 
 import '../../../utils/images.dart';
 
@@ -11,13 +12,14 @@ class DrawerWidget extends StatelessWidget {
       child: Drawer(
         child: Column(children:  [
           Container(
-            alignment: Alignment.center,
+            padding: const EdgeInsets.all(15),
+            alignment: Alignment.centerLeft,
             width: double.infinity,
-            height: 200,color: Colors.green,child:const  Text('Simple Cashier',style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),),),
+            height: 200,color: Colors.green,child:const  Text('Simple\nCashier',style: TextStyle(color: Colors.white,fontSize: 30,fontWeight: FontWeight.bold),),),
           listTileWidget(
             image: Images.addItem,
             title: 'Add Item',
-            press: (){}
+            press: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=> const AddItemsScreen()))
           ),
            listTileWidget(
             image: Images.items,
@@ -29,11 +31,7 @@ class DrawerWidget extends StatelessWidget {
             title: 'Receipts',
             press: (){}
           ),
-           listTileWidget(
-            image: Images.about,
-            title: 'About',
-            press: (){}
-          ),
+           
         ],),
       ),
     );

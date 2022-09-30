@@ -9,6 +9,6 @@ import 'package:simplecashier/controllers/upload_product_controller.dart';
  // Firebase Cloud FireStore
  FirebaseFirestore firestore=FirebaseFirestore.instance;
  // Upload Products Controller Class
- UploadProductController controller=UploadProductController(); 
+ UploadProductController uploadController=UploadProductController(); 
 
   

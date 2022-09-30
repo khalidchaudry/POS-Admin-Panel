@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:simplecashier/view/screens/add_items_screen/add_items_screen.dart';
+import 'package:simplecashier/view/screens/receipt_screen/receipt_screen.dart';
 
 import '../../../utils/images.dart';
+import '../../items_screen/items_screen.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({super.key});
@@ -24,12 +26,13 @@ class DrawerWidget extends StatelessWidget {
            listTileWidget(
             image: Images.items,
             title: 'Items',
-            press: (){}
+               press: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  ItemsScreen()))
+
           ),
            listTileWidget(
             image: Images.receipts,
             title: 'Receipts',
-            press: (){}
+               press: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  const ReceiptScreen()))
           ),
            
         ],),

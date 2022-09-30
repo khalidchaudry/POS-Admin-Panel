@@ -4,12 +4,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:simplecashier/view/utils/app_colors.dart';
-import 'package:simplecashier/view/utils/app_strings.dart';
 import 'package:simplecashier/view/utils/constants.dart';
-import 'package:simplecashier/view/utils/images.dart';
+import 'package:simplecashier/view/utils/utils.dart';
 
-import '../home_screen/widgets/rounded_button_widget.dart';
 
 class AddItemsScreen extends StatefulWidget {
    const AddItemsScreen({super.key});
@@ -22,6 +19,7 @@ class _AddItemsScreenState extends State<AddItemsScreen> {
 final fireStore=FirebaseFirestore.instance.collection('users');
 File? image;
 bool loading =false;
+Color color=Colors.green;
 imagePicker()async{
   final  imagePickers= await ImagePicker().pickImage(source: ImageSource.gallery);
   final pickFile=File(imagePickers!.path);
@@ -59,7 +57,7 @@ bool isButtonActive=true;
     setState(() {
       loading=true;
     });
-await controller.fireStore(
+await uploadController.fireStore(
   
   productName: productNameController.text,
    productPrice: priceController.text,
@@ -78,6 +76,11 @@ await controller.fireStore(
       body: SafeArea(child: SingleChildScrollView(
         child: Padding(padding: const EdgeInsets.all(20),child: Column(children:  [
           TextField(maxLength: 20,
+          onTap: () {
+            setState(() {
+              color=Colors.purple;
+            });
+          },
           controller: productNameController,
           textInputAction: TextInputAction.next,
             decoration: InputDecoration(label: const Text('Name of the product'),
@@ -126,26 +129,30 @@ await controller.fireStore(
               imagePicker,
             
             child: 
-           SizedBox(height: 200,width: double.infinity,child: image==null?Image.asset(Images.pickImage):Image.file(image!,fit: BoxFit.cover,))),
+           SizedBox(child: image==null?Image.asset(Images.pickImage,height: 200,):Image.file(image!,height: 200,))),
           const SizedBox(height: 20,),
+          ElevatedButton(
+      onPressed:(){
+        addDataToFireStore();
+            //  productNameController.clear();
+            //   priceController.clear();
+              
+            //   descController.clear();
+            //   barcodeController.clear();
+              color=Colors.blueGrey;
+              if (productNameController.text.isEmpty) {
+      
+      flushBarErrorMessage('Please enter product name', context);
+              }
+             else if (priceController.text.isEmpty) {
+                       flushBarErrorMessage('Please Fill the price field', context);
+
+              }
+      } ,
+      
+      style: ElevatedButton.styleFrom(backgroundColor:color,minimumSize:  const Size(double.infinity, 40),shape: const StadiumBorder()),
+      child: loading?const Center(child: CircularProgressIndicator(backgroundColor: AppColor.appBarBgColor,)):const Text('ADD'),)  
           
-          RoundedButtonWidget(text: 'Add',loading: loading, press: (){
-            String id=DateTime.now().millisecondsSinceEpoch.toString();
-//            await  fireStore.doc(id).set({
-//             'productName': productNameController.text.toString(),
-//    'productPrice': priceController.text.toString(),
-//     'productDesc': descController.text.toString(),
-//      'productBarcode': barcodeController.text.toString(),
-//       // 'file': image
-//            }).then((value)=>Fluttertoast.showToast(msg: value.toString())).onError((error, stackTrace) { Fluttertoast.showToast(msg: error.toString());
-//  });
-            addDataToFireStore();
-             productNameController.clear();
-              priceController.clear();
-              image=null;
-              descController.clear();
-              barcodeController.clear();
-          }, color: Colors.green, width: double.infinity, height: 50)
         ],),),
       )),
     );

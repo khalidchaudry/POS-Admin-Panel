@@ -1,46 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:simplecashier/view/screens/home_screen/widgets/rounded_button_widget.dart';
 
-class BottomWidget extends StatelessWidget {
-  // const BottomWidget({super.key});
+import '../../../global_widegts/rounded_button_widget.dart';
+
+class BottomWidget extends StatefulWidget {
+   BottomWidget({super.key,
+  required this.items, required this.colors, required this.quantity, required this.total,
+  });
+   double total;
+  int items;
+   int quantity;
+Color colors;
+  @override
+  State<BottomWidget> createState() => _BottomWidgetState();
+}
+
+class _BottomWidgetState extends State<BottomWidget> {
 bool loading=false;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
       child: Column(children:  [
         const Divider(thickness: 2,),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            RoundedButtonWidget(text: 'CLEAR', loading: loading,press: (){}, color: Colors.red,width: 160,height: 40,),
-            RoundedButtonWidget(text: 'CHECK OUT',loading: loading, press: (){}, color: Colors.green,width: 160,height: 40,),
-          ],
-        ),
+        RoundedButtonWidget(text: 'CLEAR', loading: loading,press: (){setState(() {
+        widget.total=0;
+        widget.items=0;
+        widget.quantity=0;
+        widget.colors=Colors.purple;
+        });}, color: widget.colors,width: double.infinity,height: 40,),
         const SizedBox(height: 10,),
 
        Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children:  [
         Column(
-          children: const [
-            Text('TOTAL',style: TextStyle(fontWeight: FontWeight.bold),),
-             Text('0.00'),
+          children:  [
+            const Text('TOTAL',style: TextStyle(fontWeight: FontWeight.bold),),
+             Text(widget.total.toStringAsFixed(2)),
           ],
         ),
                 const SizedBox(height: 50,child: VerticalDivider(thickness: 2,color: Colors.black,)),
 
          Column(
-          children: const [
-            Text('TOTAL ITEMS',style: TextStyle(fontWeight: FontWeight.bold)),
-             Text('0'),
+          children:  [
+            const Text('TOTAL ITEMS',style: TextStyle(fontWeight: FontWeight.bold)),
+             Text(widget.items.toString()),
           ],
         ), 
                 const SizedBox(height: 50,child: VerticalDivider(thickness: 2,color: Colors.black,)),
 
         Column(
-          children: const [
-            Text('QUANTITY',style: TextStyle(fontWeight: FontWeight.bold)),
-             Text('0'),
+          children:  [
+            const Text('QUANTITY',style: TextStyle(fontWeight: FontWeight.bold)),
+             Text(widget.quantity.toString()),
           ],
         ),
        

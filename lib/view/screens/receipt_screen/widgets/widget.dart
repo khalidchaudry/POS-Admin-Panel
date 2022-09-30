@@ -1,0 +1,1 @@
+export 'receipt_detail_widget.dart';

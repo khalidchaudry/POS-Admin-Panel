@@ -19,6 +19,7 @@ final invoice=firestore.collection('products').snapshots();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Colors.white,
       appBar: AppBar(title: const Text('Receipts'),
       backgroundColor: AppColor.appBarBgColor,
       actions: [IconButton(onPressed: (){

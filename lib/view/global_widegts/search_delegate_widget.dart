@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simplecashier/provider/theme_provider.dart';
 import 'package:simplecashier/view/screens/home_screen/home_screen.dart';
 import 'package:simplecashier/view/utils/constants.dart';
 
@@ -17,7 +19,7 @@ class SearchDelegateWidget extends SearchDelegate{
 
   @override
   Widget buildResults(BuildContext context)=>InkWell(
-                      onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>HomeScreen())),
+                      onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>const HomeScreen())),
                       child: 
                       Center(
                         child: SingleChildScrollView(
@@ -41,7 +43,7 @@ class SearchDelegateWidget extends SearchDelegate{
                                       ),
                                       const SizedBox(height: 8,),
                                       Text(name,textAlign: TextAlign.center,
-                                      style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),),
+                                      style: Provider.of<ThemeProvider>(context).darkTheme? const TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20):const TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20)),
                                       
                                     ],)),
                         ),
@@ -62,15 +64,17 @@ class SearchDelegateWidget extends SearchDelegate{
           return Padding(
             padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 16.0),
             child: ListTile(
+              
               onTap: (){
                 name=snapshot.data!.docs[index]['ProductName'];
                  image=snapshot.data!.docs[index]['ProductImage'];
                 query=name;
                 showResults(context);
               },
+              
              dense: true,
                 enabled: true,
-                tileColor: Colors.black12,
+                tileColor: Colors.white,
                 shape: const StadiumBorder(),
                 
              

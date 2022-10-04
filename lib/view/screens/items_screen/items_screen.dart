@@ -1,7 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:simplecashier/view/screens/items_screen/widgets/no_product_widget.dart';
 import 'package:simplecashier/view/screens/items_screen/widgets/edit_items_details_widget.dart';
 import 'package:simplecashier/view/utils/app_colors.dart';
 import 'package:simplecashier/view/utils/constants.dart';
@@ -12,8 +11,9 @@ class ItemsScreen extends StatelessWidget {
    ItemsScreen({super.key});
      final fireStoreSnapshot =firestore.collection('products').snapshots();
   @override
-  Widget build(BuildContext context) {
-    return fireStoreSnapshot!=null? Scaffold(
+  Widget build(BuildContext context) =>OrientationBuilder(builder: (context, orientation) {
+    final isPortrait=orientation==Orientation.portrait;
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Items'),
         backgroundColor: AppColor.appBarBgColor,
@@ -28,8 +28,8 @@ class ItemsScreen extends StatelessWidget {
           if (snapshot.hasData) {
             return GridView.builder(
           gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisExtent: MediaQuery.of(context).size.height*.24,
+            crossAxisCount: isPortrait?3:4,
+                  mainAxisExtent: isPortrait?MediaQuery.of(context).size.height*.24:MediaQuery.of(context).size.height*.56,
            
           ),
           itemCount:snapshot.data!.docs.length,
@@ -61,8 +61,10 @@ class ItemsScreen extends StatelessWidget {
                             ClipRRect(
                               borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                               child: Image.network(snapshot.data!.docs[index]['ProductImage'],
-                               width: MediaQuery.of(context).size.width*.4,
-                                  height: MediaQuery.of(context).size.height*.15,
+                               width: isPortrait?MediaQuery.of(context).size.width*.4:MediaQuery.of(context).size.width*.5
+                                       ,
+                                          height: isPortrait?MediaQuery.of(context).size.height*.15:MediaQuery.of(context).size.height*.4
+                                          ,
                                   fit: BoxFit.cover,
                               ),
                             ),
@@ -81,6 +83,6 @@ class ItemsScreen extends StatelessWidget {
           }
         
       }),
-    ):const NoProductWidget();
-  }
+    );
+  });
 }

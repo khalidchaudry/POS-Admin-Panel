@@ -10,8 +10,8 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Drawer(
+    return Drawer(
+      child: SingleChildScrollView(
         child: Column(children:  [
           Container(
             padding: const EdgeInsets.all(15),
@@ -27,14 +27,19 @@ class DrawerWidget extends StatelessWidget {
             image: Images.items,
             title: 'Items',
                press: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  ItemsScreen()))
-
+      
           ),
            listTileWidget(
             image: Images.receipts,
             title: 'Receipts',
                press: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  const ReceiptScreen()))
           ),
-           
+          // listTileWidget(
+          //   image: Images.setting,
+          //   title: 'Settings',
+          //      press: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  SettingsScreen()))
+          // ),
+            
         ],),
       ),
     );

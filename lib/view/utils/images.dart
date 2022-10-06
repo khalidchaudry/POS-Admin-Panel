@@ -9,4 +9,6 @@ class Images{
    static const splashImage='assets/images/logo.png';
    static const bg='assets/images/bg.png';
    static const setting='assets/images/setting.png';
+   static const lock='assets/images/lock.png';
+   static const  phoneField='assets/images/verify.jpg';
 }

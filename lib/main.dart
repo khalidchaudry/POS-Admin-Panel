@@ -2,9 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplecashier/provider/theme_provider.dart';
+import 'package:simplecashier/view/routes/route_name.dart';
 import 'package:simplecashier/view/utils/app_colors.dart';
 
 import 'view/routes/routes.dart';
@@ -16,6 +18,7 @@ Future main() async{
   
   WidgetsFlutterBinding.ensureInitialized();
   //  EasyLocalization.ensureInitialized();
+  
   SharedPreferences sp=await SharedPreferences.getInstance();
   if (kIsWeb) {
     await Firebase.initializeApp(

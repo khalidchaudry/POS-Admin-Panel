@@ -17,7 +17,7 @@ final String phoneNumber;
 
 class _OTPScreenState extends State<OTPScreen> {
    String _verificationID='';
-var token;
+
 TextEditingController oTPController=TextEditingController();
 
 final formKey=GlobalKey<FormState>();
@@ -77,7 +77,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey=GlobalKey<ScaffoldState>();
                       auth.signInWithCredential(PhoneAuthProvider.credential(
                     verificationId: _verificationID, smsCode: value)).then((value) {
                       if (value.user!=null) {
-                        Navigator.pushNamedAndRemoveUntil(context,RouteName.selectLanguageScreen,((route) => false));
+                        Navigator.pushNamedAndRemoveUntil(context,RouteName.homescreen,((route) => false));
                         flushBarErrorMessage('invalid OTP', context);
                       }
                     });
@@ -107,9 +107,9 @@ final GlobalKey<ScaffoldState> _scaffoldKey=GlobalKey<ScaffoldState>();
                         if (auth.currentUser!.phoneNumber!=null) {
                           debugPrint('OTP is:${oTPController.text.toString()}');
                           debugPrint('verify ID is:$_verificationID');
-                           debugPrint('verify code is:$token');
+                        
                           flushBarErrorMessage('Successfully Login', context);
-                        Navigator.pushNamedAndRemoveUntil(context,RouteName.selectLanguageScreen,((route) => false));
+                        Navigator.pushNamedAndRemoveUntil(context,RouteName.homescreen,((route) => false));
                         }
                       }
                     }, icon: const Icon(Icons.arrow_forward,color: Colors.green,)),
@@ -129,7 +129,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey=GlobalKey<ScaffoldState>();
       verificationCompleted: (PhoneAuthCredential credential)async{
         await auth.signInWithCredential(credential).then((value) { 
           if (value.user!=null) {
-            Navigator.pushNamedAndRemoveUntil(context,RouteName.selectLanguageScreen,((route) => false));
+            Navigator.pushNamedAndRemoveUntil(context,RouteName.homescreen,((route) => false));
             flushBarErrorMessage('Successfully login! ', context);
           }
           });
@@ -140,7 +140,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey=GlobalKey<ScaffoldState>();
        codeSent: (String verificationId,int? resendToken){
         
         setState(() {
-          token=resendToken;
+       
             _verificationID=verificationId;
         });
       

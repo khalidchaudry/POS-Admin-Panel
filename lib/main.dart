@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplecashier/provider/theme_provider.dart';
-import 'package:simplecashier/view/routes/route_name.dart';
 import 'package:simplecashier/view/utils/app_colors.dart';
 
 import 'view/routes/routes.dart';
@@ -18,6 +17,8 @@ Future main() async{
   
   WidgetsFlutterBinding.ensureInitialized();
   //  EasyLocalization.ensureInitialized();
+  
+  // FlutterNativeSplash.remove();
   
   SharedPreferences sp=await SharedPreferences.getInstance();
   if (kIsWeb) {
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
       // localizationsDelegates:context.localizationDelegates,
       // supportedLocales: context.supportedLocales,
       // locale: context.locale,
-      
+      // initialRoute: RouteName.phoneScreen,
         onGenerateRoute: Routes.routeGenerator,
     );
   }

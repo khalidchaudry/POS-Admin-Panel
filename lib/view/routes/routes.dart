@@ -6,12 +6,9 @@ import 'package:simplecashier/view/screens/screens.dart';
 class Routes{
   static Route<dynamic> routeGenerator(RouteSettings settings){
     switch (settings.name) {
-      case RouteName.splashScreen:
-        return MaterialPageRoute(builder: (_)=>const SplashScreen());
       case RouteName.phoneScreen:
         return MaterialPageRoute(builder: (_)=> const PhoneFieldScreen());
-      case RouteName.selectLanguageScreen:
-        return MaterialPageRoute(builder: (_)=>const SelectLanguageScreen());
+      
          case RouteName.settingsscreen:
         return MaterialPageRoute(builder: (_)=> SettingsScreen());
          case RouteName.homescreen:
@@ -22,3 +19,9 @@ class Routes{
     }
   }
 }
+
+
+//  case RouteName.splashScreen:
+//         return MaterialPageRoute(builder: (_)=>const SplashScreen());
+// case RouteName.selectLanguageScreen:
+        // return MaterialPageRoute(builder: (_)=>const SelectLanguageScreen());

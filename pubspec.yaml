@@ -12,11 +12,13 @@ dependencies:
   another_flushbar: ^1.12.29
   cached_network_image: ^3.2.2
   cloud_firestore: ^3.4.8
+  collapsible_sidebar: ^2.0.2+3
   cupertino_icons: ^1.0.2
   easy_localization: any
   firebase_auth: ^3.11.1
   firebase_core: ^1.22.0
   firebase_storage: ^10.3.8
+  flutter_native_splash: ^2.2.10+1
   flutter:
     sdk: flutter
  
@@ -26,10 +28,13 @@ dependencies:
   intl_phone_number_input: ^0.7.1
   pinput: ^2.2.13
   provider: ^6.0.3
+  animations: ^2.0.7
   screenshot: ^1.2.3
   shared_preferences: ^2.0.15
   uuid: ^3.0.6
 
+
+  
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:

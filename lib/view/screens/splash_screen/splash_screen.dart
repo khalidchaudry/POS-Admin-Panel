@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:simplecashier/view/screens/phone_text_field_screen/phone_text_field_screen.dart';
 
 import '../../utils/utils.dart';
 
@@ -16,7 +15,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(const Duration(seconds: 2), () =>Navigator.push(context, MaterialPageRoute(builder: (_)=> PhoneFieldScreen()))
+    Timer(const Duration(seconds: 2), () {}
+    // Navigator.push(context, MaterialPageRoute(builder: (_)=> PhoneFieldScreen()))
       
     );
     super.initState();

@@ -19,7 +19,7 @@ class SettingsScreen extends StatelessWidget {
 
         value: Provider.of<ThemeProvider>(context).darkTheme,
         activeColor: Colors.green,
-                  onChanged: (bool isActive) =>Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
+                  onChanged: (bool isActive) {},
                   title: Provider.of<ThemeProvider>(context).darkTheme?const Text('Light Theme',
                   style: TextStyle(color: Colors.white),
                       ):const Text('Dark Theme',

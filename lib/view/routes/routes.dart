@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:simplecashier/view/routes/route_name.dart';
-import 'package:simplecashier/view/screens/phone_text_field_screen/phone_text_field_screen.dart';
 import 'package:simplecashier/view/screens/screens.dart';
+import 'package:simplecashier/view/utils/firebase.dart';
 
 class Routes{
   static Route<dynamic> routeGenerator(RouteSettings settings){
     switch (settings.name) {
-      case RouteName.phoneScreen:
+       case RouteName.phoneScreen:
+        if(auth.currentUser!=null){
+          return MaterialPageRoute(builder: (_)=> const BottomNavBar());
+        }else{
         return MaterialPageRoute(builder: (_)=> const PhoneFieldScreen());
-      
-         case RouteName.settingsscreen:
-        return MaterialPageRoute(builder: (_)=> SettingsScreen());
-         case RouteName.homescreen:
-        return MaterialPageRoute(builder: (_)=>const HomeScreen());
-        
+        }
+    
       default:
-              throw const FormatException("Route not found");
+      throw const FormatException("Route not found");
     }
   }
 }
 
-
+     
 //  case RouteName.splashScreen:
 //         return MaterialPageRoute(builder: (_)=>const SplashScreen());
 // case RouteName.selectLanguageScreen:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../global_widegts/rounded_button_widget.dart';
+
 
 class BottomWidget extends StatefulWidget {
    BottomWidget({super.key,
@@ -23,12 +23,12 @@ bool loading=false;
       padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
       child: Column(children:  [
         const Divider(thickness: 2,),
-        RoundedButtonWidget(text: 'CLEAR', loading: loading,press: (){setState(() {
-        widget.total=0;
-        widget.items=0;
-        widget.quantity=0;
-        widget.colors=Colors.purple;
-        });}, color: widget.colors,width: double.infinity,height: 40,),
+        // RoundedButtonWidget(text: 'CLEAR', loading: loading,press: (){setState(() {
+        // widget.total=0;
+        // widget.items=0;
+        // widget.quantity=0;
+        // widget.colors=Colors.purple;
+        // });}, color: widget.colors,width: double.infinity,height: 40,),
         const SizedBox(height: 10,),
 
        Row(

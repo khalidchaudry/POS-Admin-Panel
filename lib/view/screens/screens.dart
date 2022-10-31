@@ -5,3 +5,7 @@ export 'receipt_screen/receipt_screen.dart';
 export 'select_language_screen/select_language_screen.dart';
 export 'splash_screen/splash_screen.dart';
 export 'settings_screen/settings_screen.dart';
+export 'phone_text_field_screen/phone_text_field_screen.dart';
+export 'cart_screen/cart_screen.dart';
+export 'bottom_nav_bar/bottom_nav_bar.dart';
+export 'notification_screen/notification_screen.dart';

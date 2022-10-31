@@ -1,7 +1,6 @@
 class RouteName{
- static const  phoneScreen='/';
-  static const  settingsscreen='/settings_screen';
-  static const  homescreen='/home_screen';
- // static const  splashScreen='/';
+  static const  phoneScreen='/';
+  static const  bottomNavBar='/';
+//  static const  splashScreen='/ splash';
   // static const  selectLanguageScreen='/language_screen';
 }

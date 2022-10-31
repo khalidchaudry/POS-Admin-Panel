@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:simplecashier/view/global_widegts/global_widgets.dart';
-import 'package:simplecashier/view/screens/otp_screen/otp_screen.dart';
-
+import 'package:simplecashier/view/screens/home_screen/home_screen.dart';
+import 'package:uuid/uuid.dart';
+import '../../global_widgets/global_widgets.dart';
 import '../../utils/utils.dart';
 
 class PhoneFieldScreen extends StatefulWidget {
@@ -17,12 +17,18 @@ TextEditingController numberController=TextEditingController();
 
 PhoneNumber number=PhoneNumber(isoCode: 'SA');
 String data='';
+String uid='';
 final formKey=GlobalKey<FormState>();
 @override
 void dispose() {
   numberController.dispose();
   super.dispose();
 }
+// @override
+// void initState() {
+//   super.initState();
+//   uid=FirebaseAuth.instance.currentUser!.uid;
+// }
 bool loading=false;
 // getNumber(String number)async{
 //   PhoneNumber phoneNumber=await PhoneNumber.getRegionInfoFromPhoneNumber('SA');
@@ -91,23 +97,25 @@ bool loading=false;
               ),
             ),
              SizedBox(height: MediaQuery.of(context).size.height*.3,),
-           
-            RoundedButtonWidget(text: 'Request OTP', press: ()async{
+           NeumorphismButtonWidget( press: ()async{
               if (formKey.currentState!.validate()) {
+                String? userId=const Uuid().v4();
                 setState(() {
-                loading=true;
+                loading=!loading;
               });
-          
-      
-      
-              Navigator.push(context,MaterialPageRoute(builder: (_)=>OTPScreen(phoneNumber:  data,)));
-              setState(() {
-                loading=false;
-              });
-              }
-              
-            }, color: Colors.green, width: double.infinity, height: 50, loading: loading)
-             
+              // await firestore.collection('users').doc().set({
+              //   'userNumber':numberController.text.toString(),
+              // });
+              debugPrint('User ID is: $userId');
+              //  if(auth.currentUser!=null){
+        // return Navigator.pushNamed(context, RouteName.phoneScreen);
+        // }
+
+
+   }
+   Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomeScreen()));
+              //  Navigator.pushNamedAndRemoveUntil(context,RouteName.bottomNavBar,((route) => false));
+   }, color: Colors.white, width: double.infinity, height: 50, radius: 10, isCheck: loading, child: const Text('Request OTP'))
           ],),
         ),
       ),

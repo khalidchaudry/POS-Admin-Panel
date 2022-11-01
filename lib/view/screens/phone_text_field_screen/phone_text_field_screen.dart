@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:simplecashier/view/screens/home_screen/home_screen.dart';
 import 'package:uuid/uuid.dart';
 import '../../global_widgets/global_widgets.dart';
 import '../../utils/utils.dart';
@@ -113,7 +112,8 @@ bool loading=false;
 
 
    }
-   Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomeScreen()));
+      // Navigator.pushNamedAndRemoveUntil(context,RouteName.userData,((route) => false));
+  //  Navigator.push(context, MaterialPageRoute(builder: (context)=>const BottomNavBar()));
               //  Navigator.pushNamedAndRemoveUntil(context,RouteName.bottomNavBar,((route) => false));
    }, color: Colors.white, width: double.infinity, height: 50, radius: 10, isCheck: loading, child: const Text('Request OTP'))
           ],),

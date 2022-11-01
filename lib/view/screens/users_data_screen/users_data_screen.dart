@@ -3,18 +3,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:simplecashier/view/routes/route_name.dart';
 import 'package:simplecashier/view/utils/utils.dart';
 
 import '../../global_widgets/global_widgets.dart';
 
-class AddItemsScreen extends StatefulWidget {
-   const AddItemsScreen({super.key});
+class UserDataScreen extends StatefulWidget {
+   const UserDataScreen({super.key});
 
   @override
-  State<AddItemsScreen> createState() => _AddItemsScreenState();
+  State<UserDataScreen> createState() => _UserDataScreenState();
 }
 
-class _AddItemsScreenState extends State<AddItemsScreen> {
+class _UserDataScreenState extends State<UserDataScreen> {
   
 final fireStore=FirebaseFirestore.instance.collection('users');
  File? image;
@@ -23,18 +24,16 @@ Color color=Colors.green;
  
  String code='';
 // Controllers
-TextEditingController productNameController=TextEditingController();
-TextEditingController priceController=TextEditingController();
-TextEditingController descController=TextEditingController();
-TextEditingController barcodeController=TextEditingController();
-TextEditingController discountController=TextEditingController();
+TextEditingController userNameController=TextEditingController();
+TextEditingController companyNameController=TextEditingController();
+TextEditingController lienceNumberController=TextEditingController();
+TextEditingController addressController=TextEditingController();
   @override
   void dispose() {
-    productNameController.dispose();
-    priceController.dispose();
-    descController.dispose();
-    barcodeController.dispose();
-    discountController.dispose();
+    userNameController.dispose();
+    companyNameController.dispose();
+    lienceNumberController.dispose();
+    addressController.dispose();
     super.dispose();
   }
 
@@ -52,12 +51,6 @@ setState(() {
   image=pickImageFromGallery;
 });
  }
-  
-  @override
-  void initState() {
-    barcodeController.text=code;
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) =>OrientationBuilder(builder: (context, orientation) {
     final isPortrait=orientation==Orientation.portrait;
@@ -68,13 +61,12 @@ setState(() {
     bool priceBool=false;
      bool descBool=false;
      bool addBtnBool=false;
-      bool barcodeBool=false;
     return  Scaffold(
       appBar: AppBar(
         centerTitle: true,
         elevation: 
         .5,
-        title:  const Text(AppString.appBarAddItem,style: AppColor.appBarTextStyle,),backgroundColor: AppColor.appBarBgColor,),
+        title:  const Text(AppString.userData,style: AppColor.appBarTextStyle,),backgroundColor: AppColor.appBarBgColor,),
       body: SafeArea(child: SingleChildScrollView(
         child: Padding(padding: const EdgeInsets.all(20),child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,84 +76,40 @@ setState(() {
          TextFieldWidget(
           keyboardType: TextInputType.text,
           moveNextField: TextInputAction.next,
-          hintText: 'Product Name', boolCheck: nameField, controller: productNameController),
+          hintText: 'User Name', boolCheck: nameField, controller: userNameController),
           sizedBoxheight,
         
          TextFieldWidget(
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
           moveNextField: TextInputAction.next,
-          hintText: 'Product Price', boolCheck: priceBool, controller: priceController),
+          hintText: 'Company Name', boolCheck: priceBool, controller: companyNameController),
          sizedBoxheight,
          TextFieldWidget(
            keyboardType: TextInputType.text,
           moveNextField: TextInputAction.next,
-          hintText: 'Product Description', boolCheck: descBool, controller: descController),
+          hintText: 'License Number', boolCheck: descBool, controller: lienceNumberController),
          sizedBoxheight,
-    //       NeumorphicButtonWidget(
-    //         isCheck: barcodeBool,
-    //         press: (){
-    //           setState(() {
-    //             barcodeBool=!barcodeBool;
-    //           });
-    //         },
-    //         color: Colors.transparent,
-    //         child: TextField(  
-    //       keyboardType: TextInputType.number,
-    //         controller: barcodeController,
-    //         textInputAction: TextInputAction.next,
-    //           decoration:   InputDecoration(hintText: 'Product Barcode',           
-    //           border: InputBorder.none,
-    //           suffixIcon: 
-    //           TextButton(onPressed:(){  
-    //             Navigator.push(context, MaterialPageRoute(builder: (_)=>MobileScanner(
-    //       allowDuplicates: false,
-    //       controller: MobileScannerController(
-    //         facing: CameraFacing.back, torchEnabled: true),
-    //       onDetect: (barcode, args) {
-    //         if (barcode.rawValue == null) {
-    //           flushBarErrorMessage(barcode.rawValue.toString(), context);
-    //           debugPrint('Failed to scan Barcode');
-    //         } else {
-    //         code = barcode.rawValue!;
-    //         setState(() {
-    //           Navigator.pop(context);
-    //  barcodeController.text=code;
-    //         });
-    //       flushBarErrorMessage('Barcode found: $code', context);
-    //           debugPrint('Barcode found! $code');
-    //         }
-    //       }),));
-    //           }, 
-    //            child:  Image.asset(Images.qr,width: 30,height:30))
-    //           ),
-              
-    //           ),
-    //         ),
-                          //  const SizedBox(height: 7,),
-
-         const Text('Optional',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),),
-                  const SizedBox(height: 5,),
          TextFieldWidget(
-           keyboardType: TextInputType.number,
+           keyboardType: TextInputType.text,
           moveNextField: TextInputAction.done,
-          hintText: 'Discount in %', boolCheck: descBool, controller: discountController),
+          hintText: 'Address', boolCheck: descBool, controller: addressController),
          sizedBoxheight,
           SizedBox(
             width: double.infinity,
             child: NeumorphicButtonWidget(isCheck: addBtnBool, press: ()async{
-              if (image!=null&&productNameController.text.isNotEmpty && priceController.text.isNotEmpty && 
-              descController.text.isNotEmpty) {
+              if (image!=null&&companyNameController.text.isNotEmpty && userNameController.text.isNotEmpty && 
+              lienceNumberController.text.isNotEmpty && addressController.text.isNotEmpty) {
                  setState(() {
       loading=true;
     });
-await uploadController.fireStore(
-  productName: productNameController.text,
-   productPrice: priceController.text,
-    productDesc: descController.text,
-     productBarcode: barcodeController.text,
-     productDiscount:discountController.text,
+await companyController.companyData(
+  userName: userNameController.text,
+   companyName: companyNameController.text,
+    licenseNumber: lienceNumberController.text,
+     address: addressController.text,
       file: image
       );
+            Navigator.pushNamed(context, RouteName.bottomNavBar);
       setState(() {
         loading=false;
       });
@@ -194,7 +142,7 @@ await uploadController.fireStore(
                 
              contentPadding: const EdgeInsets.all(10),
                 children: [
-                   const Text('How do you want to choose product picture',
+                   const Text('How do you want to choose your company logo',
                    textAlign: TextAlign.center,
                    style: TextStyle(color:Colors.grey,)),
                    dialogHeight,
@@ -229,7 +177,7 @@ await uploadController.fireStore(
  Image.asset(Images.pickImage,height: 150,width: double.infinity,):
  Image.file(image!,height: 150,width: double.infinity),
  const SizedBox(height: 5,),
- const Text('Add Product Image',style: TextStyle(color:Colors.grey,)),
+ const Text('Add your company logo',style: TextStyle(color:Colors.grey,)),
 const SizedBox(height: 5,),
  const Text('Best image dimensions is 320x650 px',style: TextStyle(color:Colors.grey,))
             ],

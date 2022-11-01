@@ -66,9 +66,6 @@ class MyApp extends StatelessWidget {
        themeMode: Provider.of<ThemeProvider>(context).themeMode,
        theme: light,
        darkTheme: dark,
-      // localizationsDelegates:context.localizationDelegates,
-      // supportedLocales: context.supportedLocales,
-      // locale: context.locale,
         onGenerateRoute: Routes.routeGenerator,
     );
   }

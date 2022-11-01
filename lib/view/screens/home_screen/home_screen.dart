@@ -6,7 +6,7 @@ import 'package:simplecashier/provider/provider.dart';
 import 'package:simplecashier/view/utils/utils.dart';
 import '../../../notification/cloud_messaging_service.dart';
 import '../../global_widgets/global_widgets.dart';
-import '../screens.dart';
+import '../cart_screen/cart_screen.dart';
 
  
 class HomeScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String image='';
   String id='';
   double price=0.00;
-  int quantity=0;
+  int quantity=1;
   int increaseQuantity=0;
   int decreaseQuantity=0;
 
@@ -53,7 +53,6 @@ final fireStoreSnapshot =firestore.collection('products').snapshots();
   Widget build(BuildContext context) {
    final size= MediaQuery.of(context).size;
     var theme=Provider.of<ThemeProvider>(context);
-    var dayClick=theme.lightTheme;
     var nightClick=theme.darkTheme;
     return  OrientationBuilder(
       builder: (BuildContext context, Orientation orientation) { 
@@ -63,7 +62,7 @@ final fireStoreSnapshot =firestore.collection('products').snapshots();
         return Scaffold(
         
         floatingActionButton: FloatingActionButton(
-        onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=> const CartScreen())), tooltip: 'Go to cart',
+        onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  CartScreen())), tooltip: 'Go to cart',
         child: const Icon(Icons.shopping_cart)),
         appBar: AppBar(
           elevation: 0,
@@ -135,86 +134,38 @@ final fireStoreSnapshot =firestore.collection('products').snapshots();
                           ] ),
           ),   
           body:
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: fireStoreSnapshot,
-                    builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return GridView.builder(
-                                 shrinkWrap: true,
-                          gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: isPortrait?3:5,
-                                mainAxisSpacing: customSize.height*.0199,
-                                crossAxisSpacing: customSize.width*.0199,
-                        mainAxisExtent: isPortrait?customSize.height*.23:customSize.height*.56,
-                          ),
-                          itemCount:
-                          snapshot.data!.docs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            // get All Product Data
-                                // final homeData=homeProvider.getproductDataList[index];
-                                // get Cart data
-                                final data=snapshot.data!.docs[index];
-                                debugPrint(snapshot.data!.docs[index].toString());
-                                return InkWell(
-                                           onTap: (){
-                                            setState(() {
-                });
-                                    cartController .addCart(productName: data['ProductName'],
-                                    quantity: quantity,
-                                     productPrice: data['ProductPrice'],productImage: data['ProductImage']);
-                    //                 CartModel cartModel=CartModel(
-                    //                   productName: data['ProductName'],
-                    //                   productQuantiy: quantity,
-                    //                   productPrice: data['ProductPrice'],
-                    //                   productImage: data['ProductImage'],
-                    //                   productId: data['id']
-                    //                 );
-                    //                 Provider.of<CartProvider>(context, listen: false)
-                    // .addToCart(cartModel);
-                // idList.add(data['id']);
-                                    },
-                                     onLongPress: () => uploadController.deleteItems(id: data['id']),
-                                           
-                                  child: Container(               
-                                      decoration: BoxDecoration(
-                                    color: Colors.white,
-                                                    border: Border.all(color: Theme.of(context).primaryColor.withOpacity(.2)),
-                                                    boxShadow: [BoxShadow(
-                                                    offset: const Offset(-2, 2),
-                                                    blurRadius: 5,
-                                                    color: Colors.grey.withOpacity(.5)
-                                                    )],
-                                                    borderRadius: BorderRadius.circular(15),
-                                            ),
-                                                child:  Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children:  [
-                                                  ClipRRect(
-                                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-                                                    child: Image.network(data['ProductImage'],
-                                                   width: double.infinity
-                                                   ,
-                                                      height: MediaQuery.of(context).size.height*.15
-                                                      ,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: customSize.height*.01,),
-                                                  Text(data['ProductName']),
-                                                Text(data['ProductPrice'].toString()),
-                                                                  ])),
-                                );
-                  
-                        });
-                      }else{
-                        return const Center(child: CircularProgressIndicator(),);
-                      }
-                    },
-                  
-                  )
-                    )
+                StreamBuilder<QuerySnapshot>(
+                  stream: fireStoreSnapshot,
+                  builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasData) {
+                      return GridView.builder(
+                               shrinkWrap: true,
+                        gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: isPortrait?3:5,
+                              mainAxisSpacing: customSize.height*.0199,
+                              crossAxisSpacing: customSize.width*.0199,
+                      mainAxisExtent: isPortrait?customSize.height*.24:customSize.height*.56,
+                        ),
+                        itemCount:
+                        snapshot.data!.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                         
+                              final data=snapshot.data!.docs[index];
+                              debugPrint(snapshot.data!.docs[index].toString());
+                              return GridViewWidget(press: ()=>cartController .addCart(productName: data['ProductName'],
+                                  quantity: quantity,
+                                   productPrice: data['ProductPrice'],productImage: data['ProductImage']), longPress:() => uploadController.deleteItems(id: data['id']),
+image: data['ProductImage'], name: data['ProductName'], price: data['ProductPrice'],
+            
+            );
+                
+                      });
+                    }else{
+                      return const Center(child: CircularProgressIndicator(),);
+                    }
+                  },
+                
+                )
                     );
       // const NoProductWidget(image: Images.noData);
        },     

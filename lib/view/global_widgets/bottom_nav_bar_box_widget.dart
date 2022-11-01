@@ -29,7 +29,7 @@ class BottomNavBarBoxWidget extends StatelessWidget {
           )
           ]
           ),
-          child: Image.asset(image,color: Colors.white,),
+          child: Image.asset(image,),
     );
   }
 }

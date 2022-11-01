@@ -20,7 +20,7 @@ class InvoiceController{
     try {
       final invoiceId=const Uuid().v1();
       final String imageUrl=await invoiceFirebaseStorage(image: invoiceImage);
-     await firestore.collection('users').doc(auth.currentUser!.uid).collection('invoices').doc(invoiceId).set({
+     await firestore.collection('invoices').doc(invoiceId).set({
       'ProductInvoice':imageUrl,
       'invoiceId':invoiceId,
     });

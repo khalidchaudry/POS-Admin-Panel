@@ -1,10 +1,10 @@
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:simplecashier/view/screens/invoice_screen/print_page.dart';
 import 'package:simplecashier/view/screens/invoice_screen/widget/icon_text_widget.dart';
 import '../../global_widgets/global_widgets.dart';
 import '../../utils/utils.dart';
+import 'printing_screen.dart';
 
 class InvoiceScreen extends StatefulWidget {
   final String invoiceId;
@@ -16,12 +16,7 @@ class InvoiceScreen extends StatefulWidget {
 class _InvoiceScreenState extends State<InvoiceScreen> {
   ScreenshotController screenShootController=ScreenshotController();
   final printData=firestore.collection('invoices').snapshots();
-  String dir=Directory.current.path;
-  // testPrint({required String printerIp,required Uint8List image})async{
-  //    final profile= await CapabilityProfile.load();
-  //    final generator=Generator(PaperSize.mm80, profile);
-  //    final availableProfiles = await CapabilityProfile.getAvailableProfiles();
-  // }
+ String invoice='';
   @override
   Widget build(BuildContext context) {
   bool printValue=false;
@@ -34,7 +29,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       await screenShootController.capture().
       then((value) =>invoiceController.invoiceFireStore(invoiceImage:value!),
        );
-       Navigator.push(context, MaterialPageRoute(builder: (_)=> const PrintPage()));
+       // ignore: use_build_context_synchronously
+       Navigator.push(context, MaterialPageRoute(builder: (_)=>  SelectBlueDevice(image:invoice)));
     },
   child: const Icon(Icons.print,color: Colors.white,),
   ),
@@ -59,12 +55,30 @@ body:SafeArea(
             RowTextWidget(text1: 'Date:', text2: '${DateTime.now()}',text1Bold: const TextStyle(fontWeight: FontWeight.normal),text2Bold: const TextStyle(fontWeight: FontWeight.normal),),
             //  const RowTextWidget(text1: 'Customer Name:', text2: 'Zaki',text1Bold: TextStyle(fontWeight: FontWeight.normal),text2Bold: TextStyle(fontWeight: FontWeight.normal)),
            const Divider(thickness: 2,),
-          const RowTextWidget(text1: '2 X ProductName(1200 PKR)', text2: '1200 PKR',text1Bold: TextStyle(fontWeight: FontWeight.normal),text2Bold: TextStyle(fontWeight: FontWeight.normal)),
-           const Divider(thickness: 1,),
-           const RowTextWidget(text1: '2 X ProductName(1100 PKR)', text2: '1100 PKR',text1Bold: TextStyle(fontWeight: FontWeight.normal),text2Bold: TextStyle(fontWeight: FontWeight.normal)),
-           const Divider(thickness: 1,),
-           const RowTextWidget(text1: '2 X ProductName(900 PKR)', text2: '900 PKR',text1Bold: TextStyle(fontWeight: FontWeight.normal),text2Bold: TextStyle(fontWeight: FontWeight.normal)),
-           const Divider(thickness: 1,),
+           Expanded(
+             child: StreamBuilder<QuerySnapshot>(
+              stream: firestore.collection('cart').orderBy('quantity').snapshots(),
+              builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+               if (snapshot.hasData) {
+                 return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    final data=snapshot.data!.docs[index];
+                    invoice=data['productImage'];
+                   return  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                     children: [
+                       RowTextWidget(text1: '${data['quantity']} X ${data['productName']}(${data['productPrice']} PKR)', text2: '${data['quantity']*data['productPrice']} PKR',
+                       text1Bold: const TextStyle(fontWeight: FontWeight.normal),text2Bold: const TextStyle(fontWeight: FontWeight.normal)),
+                        const Divider(thickness: 2,),
+                     ],
+                   );
+                 });
+               }else{
+                return const Center(child: CircularProgressIndicator(backgroundColor: Colors.green,),);
+               }
+             }),
+           ),          
            const RowTextWidget(text1: 'Total', text2: '3200 PKR',text1Bold: TextStyle(fontWeight: FontWeight.bold),text2Bold: TextStyle(fontWeight: FontWeight.bold)),
            const Divider(thickness: 2,),
            const RowTextWidget(text1: 'Discount(100 PKR)', text2: '100 PKR',text1Bold: TextStyle(fontWeight: FontWeight.bold),text2Bold: TextStyle(fontWeight: FontWeight.bold)),

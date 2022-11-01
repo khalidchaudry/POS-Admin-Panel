@@ -12,7 +12,7 @@ final TextStyle text2Bold;
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
       Text(text1,style: text1Bold,),
-      Text(text2,style: text2Bold,),
+      Text(text2,style: text2Bold),
     ],);
   }
 }

@@ -13,7 +13,6 @@ class CartController{
             'productImage':productImage,
             'cartId':cartId,
             'quantity':quantity,
-            'isAdd':true,
           });
           fluttertoast(message: 'Add to cart successfully');
       } catch (e) {
@@ -32,7 +31,7 @@ fluttertoast(message: e.toString());    }
   // Update Cart Data
    updateCart({required int quantity,required String updateId})async{
       try {
-        await firestore.collection('Cart').doc(updateId).update({
+        await firestore.collection('cart').doc(updateId).update({
             'quantity':int.parse(quantity.toString()),
             // 'productPrice':double.parse(productPrice.toString()),
           });

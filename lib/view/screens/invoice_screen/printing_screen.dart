@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:blue_print_pos/blue_print_pos.dart';
 import 'package:blue_print_pos/models/models.dart';
@@ -7,10 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../utils/utils.dart';
+
 class SelectBlueDevice extends StatefulWidget {
-  const SelectBlueDevice({super.key});
+  final image;
+  const SelectBlueDevice({super.key, this.image});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SelectBlueDeviceState createState() => _SelectBlueDeviceState();
 }
 
@@ -50,6 +54,7 @@ class _SelectBlueDeviceState extends State<SelectBlueDevice> {
                                               (_selectedDevice?.address ?? '')
                                           ? _onDisconnectDevice
                                           : () => _onSelectDevice(index),
+                                          
                                       child: Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: Column(
@@ -102,35 +107,37 @@ class _SelectBlueDeviceState extends State<SelectBlueDevice> {
                                   if (!_isLoading &&
                                       _blueDevices[index].address ==
                                           (_selectedDevice?.address ?? ''))
-                                    TextButton(
-                                      onPressed: _onPrintReceipt,
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .resolveWith<Color>(
-                                          (Set<MaterialState> states) {
-                                            if (states.contains(
-                                                MaterialState.pressed)) {
-                                              return Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withOpacity(0.5);
-                                            }
-                                            return Theme.of(context)
-                                                .primaryColor;
+                                   TextButton(
+                                          onPressed: (){
+                                            _onPrintReceipt( );
                                           },
+                                          style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty
+                                                .resolveWith<Color>(
+                                              (Set<MaterialState> states) {
+                                                if (states.contains(
+                                                    MaterialState.pressed)) {
+                                                  return Theme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                      .withOpacity(0.5);
+                                                }
+                                                return Theme.of(context)
+                                                    .primaryColor;
+                                              },
+                                            ),
+                                          ),
+                                          child: Container(
+                                            color: _selectedDevice == null
+                                                ? Colors.grey
+                                                : Colors.green,
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: const Text(
+                                              'Print',
+                                              style: TextStyle(color: Colors.white),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      child: Container(
-                                        color: _selectedDevice == null
-                                            ? Colors.grey
-                                            : Colors.green,
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: const Text(
-                                          'Print',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
                                 ],
                               );
                             }),
@@ -162,6 +169,7 @@ class _SelectBlueDeviceState extends State<SelectBlueDevice> {
       
     );
   }
+
   Future<void> _onScanPressed() async {
     setState(() => _isLoading = true);
     _bluePrintPos.scan().then((List<BlueDevice> devices) {
@@ -198,7 +206,7 @@ class _SelectBlueDeviceState extends State<SelectBlueDevice> {
       } else if (status == ConnectionStatus.timeout) {
         _onDisconnectDevice();
       } else {
-        print('$runtimeType - something wrong');
+        log('$runtimeType - something wrong');
       }
       setState(() => _isLoading = false);
     });
@@ -210,52 +218,51 @@ class _SelectBlueDeviceState extends State<SelectBlueDevice> {
     final ReceiptSectionText receiptText = ReceiptSectionText();
     receiptText.addImage(
       base64.encode(Uint8List.view(logoBytes.buffer)),
-      width: 150,alignment: ReceiptAlignment.center
+      alignment: ReceiptAlignment.center
     );
     // receiptText.addSpacer();
     // receiptText.addText(
-    //   'MY STORE',
+    //   'كيلو بايت. متجر',
     //   size: ReceiptTextSizeType.medium,
     //   style: ReceiptTextStyleType.bold,
     // );
     // receiptText.addText(
-    //   'Black White Street, Jakarta, Indonesia',
-    //   size: ReceiptTextSizeType.small,
+    //   'شينيوت ، البنجاب ، باكستان',
+    //   size: ReceiptTextSizeType.medium,
     // );
     // receiptText.addSpacer(useDashed: true);
-    // receiptText.addLeftRightText('Time', '04/06/21, 10:00');
+    // receiptText.addLeftRightText('Time', DateTime.now().toString());
     // receiptText.addSpacer(useDashed: true);
     // receiptText.addLeftRightText(
-    //   'Apple 1kg',
-    //   'Rp30.000',
-    //   leftStyle: ReceiptTextStyleType.normal,
+    //   'تفاحة',
+    //   'ريال(20)',
+    //   leftStyle: ReceiptTextStyleType.bold,
     //   rightStyle: ReceiptTextStyleType.bold,
     // );
     // receiptText.addSpacer(useDashed: true);
     // receiptText.addLeftRightText(
-    //   'TOTAL',
-    //   'Rp30.000',
-    //   leftStyle: ReceiptTextStyleType.normal,
+    //   'المجموع',
+    //   'ريال(50)',
+    //   leftStyle: ReceiptTextStyleType.bold,
     //   rightStyle: ReceiptTextStyleType.bold,
     // );
     // receiptText.addSpacer(useDashed: true);
     // receiptText.addLeftRightText(
-    //   'Payment',
-    //   'Cash',
-    //   leftStyle: ReceiptTextStyleType.normal,
-    //   rightStyle: ReceiptTextStyleType.normal,
+    //   'دفع',
+    //   'نقدي',
+    //   leftStyle: ReceiptTextStyleType.bold,
+    //   rightStyle: ReceiptTextStyleType.bold,
     // );
     // receiptText.addSpacer(count: 2);
 
     // await _bluePrintPos.printReceiptText(receiptText);
 
     /// Example for print QR
-    await _bluePrintPos.printQR('KB', size: 250);
-
+    await _bluePrintPos.printQR('KB', size: 200);
     /// Text after QR
     final ReceiptSectionText receiptSecondText = ReceiptSectionText();
     receiptSecondText.addText('Powered by KB',
-        size: ReceiptTextSizeType.small);
+        size: ReceiptTextSizeType.medium);
     receiptSecondText.addSpacer();
     await _bluePrintPos.printReceiptText(receiptSecondText, feedCount: 1);
   }

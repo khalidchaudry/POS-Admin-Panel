@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simplecashier/provider/theme_provider.dart';
+import 'package:simplecashier/view/screens/inventory_screen/inventory_screen.dart';
 import 'package:simplecashier/view/screens/screens.dart';
 
 import '../../global_widgets/global_widgets.dart';
@@ -20,6 +21,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const AddItemsScreen(),
     const ItemsScreen(),
     const ReceiptScreen(),
+    const InventoryScreen()
   ];
   
   @override
@@ -46,6 +48,9 @@ icon: BottomNavBarBoxWidget(image: Images.list),            label: 'Items',
           ),
                    BottomNavigationBarItem(
 icon: BottomNavBarBoxWidget(image: Images.receipts),            label: 'Receipts',
+          ),
+          BottomNavigationBarItem(
+icon: BottomNavBarBoxWidget(image: Images.inventory),            label: 'Inventory',
           ),
         ],
         onTap: (value) {
@@ -93,6 +98,11 @@ NavigationRail(
 
    icon: BottomNavBarBoxWidget(image:Images.receipts)
 
+        ),
+        NavigationRailDestination(
+          label: Text('Inventory'),
+          selectedIcon: Tooltip(message: 'Inventory',),
+   icon: BottomNavBarBoxWidget(image:Images.inventory)
         ),
                 ],
   

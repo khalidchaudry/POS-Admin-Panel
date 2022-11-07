@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 
 class PermissionHandler{
   // Get User Permission
@@ -16,11 +17,11 @@ NotificationSettings settings = await messaging.requestPermission(
   sound: true,
 );
 if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  log('User granted permission');
+  debugPrint('User granted permission');
 } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-  log('User granted provisional permission');
+  debugPrint('User granted provisional permission');
 } else {
-  log('User declined or has not accepted permission');
+  debugPrint('User declined or has not accepted permission');
 }
   }
 }

@@ -56,10 +56,9 @@ class ListTileWidget extends StatelessWidget {
                          }, child:  const Icon(CupertinoIcons.trash,color: Colors.red,))
                        ],
                      ),
+                    RowTextWidget(text1: companyName, text2: companyName2.toString(), text1Bold: const TextStyle(fontWeight: FontWeight.bold), text2Bold:  const TextStyle(fontWeight: FontWeight.normal)),                   
                      SizedBox(height:size.height*.01),
                     RowTextWidget(text1: stockQuantity, text2: stockQuantity2.toString(), text1Bold: const TextStyle(fontWeight: FontWeight.bold), text2Bold:  const TextStyle(fontWeight: FontWeight.normal)),
-                    SizedBox(height:size.height*.01),
-                    RowTextWidget(text1: companyName, text2: companyName2.toString(), text1Bold: const TextStyle(fontWeight: FontWeight.bold), text2Bold:  const TextStyle(fontWeight: FontWeight.normal)),                   
                   ],),
                 ],
               ),

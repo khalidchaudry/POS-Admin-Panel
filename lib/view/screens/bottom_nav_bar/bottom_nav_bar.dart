@@ -27,14 +27,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
 var themeCheck=Provider.of<ThemeProvider>(context).darkTheme;
-    return Scaffold(bottomNavigationBar: MediaQuery.of(context).size.width<550? BottomNavigationBar(
+    return Scaffold(bottomNavigationBar:  BottomNavigationBar(
         currentIndex: currentIndex,
         showSelectedLabels: true,
         selectedItemColor: themeCheck?Colors.black:Colors.white,
         selectedFontSize: 17,
-        
-       
-       
         items: const [
           BottomNavigationBarItem(
 icon: BottomNavBarBoxWidget(image: Images.menu),            label: 'Home',
@@ -58,65 +55,66 @@ icon: BottomNavBarBoxWidget(image: Images.inventory),            label: 'Invento
             currentIndex = value;
           });
         },
-      ):null,
+      ),
 
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      body:        pages[currentIndex],
+//        Row(
+//         mainAxisAlignment: MainAxisAlignment.end,
         
-        children: [
-         if(MediaQuery.of(context).size.width>550)
-NavigationRail(  
-          selectedIndex:currentIndex,   
-          backgroundColor: AppColor.navigationRailBgColor,
-          destinations:  const [
+//         children: [
+//          if(MediaQuery.of(context).size.width>550)
+// NavigationRail(  
+//           selectedIndex:currentIndex,   
+//           backgroundColor: AppColor.navigationRailBgColor,
+//           destinations:  const [
    
-         NavigationRailDestination(
-     label: Text('Home'),
+//          NavigationRailDestination(
+//      label: Text('Home'),
 
-          icon: BottomNavBarBoxWidget(image: Images.menu)
+//           icon: BottomNavBarBoxWidget(image: Images.menu)
  
-        ),
+//         ),
 
-         NavigationRailDestination(
+//          NavigationRailDestination(
 
-         label: Text('Add Items'),
+//          label: Text('Add Items'),
 
-          icon: BottomNavBarBoxWidget(image:Images.add)
+//           icon: BottomNavBarBoxWidget(image:Images.add)
 
-        ),
+//         ),
    
-         NavigationRailDestination(
+//          NavigationRailDestination(
 
-          label: Text('Items'),
+//           label: Text('Items'),
 
-         icon: BottomNavBarBoxWidget(image:Images.list)
+//          icon: BottomNavBarBoxWidget(image:Images.list)
 
-        ),
- NavigationRailDestination(
+//         ),
+//  NavigationRailDestination(
 
-          label: Text('Receipts'),
+//           label: Text('Receipts'),
 
-   icon: BottomNavBarBoxWidget(image:Images.receipts)
+//    icon: BottomNavBarBoxWidget(image:Images.receipts)
 
-        ),
-        NavigationRailDestination(
-          label: Text('Inventory'),
-          selectedIcon: Tooltip(message: 'Inventory',),
-   icon: BottomNavBarBoxWidget(image:Images.inventory)
-        ),
-                ],
+//         ),
+//         NavigationRailDestination(
+//           label: Text('Inventory'),
+//           selectedIcon: Tooltip(message: 'Inventory',),
+//    icon: BottomNavBarBoxWidget(image:Images.inventory)
+//         ),
+//                 ],
   
-                onDestinationSelected: (value) {
+//                 onDestinationSelected: (value) {
 
-            setState(() {
-              currentIndex=value;
-            });
-          },
+//             setState(() {
+//               currentIndex=value;
+//             });
+//           },
 
-                ),
-        Expanded(child: pages[currentIndex],)
+//                 ),
+//         Expanded(child: pages[currentIndex],)
         
-      ],)
+//       ],)
       
       );
   }

@@ -10,7 +10,7 @@ class Images{
    static const bg='assets/images/bg.png';
    static const setting='assets/images/setting.png';
    static const lock='assets/images/lock.png';
-   static const  phoneField='assets/images/verify.jpg';
+   static const  phoneField='assets/images/verify.png';
    static const menu='assets/images/menu.png';
    static const listIcon='assets/images/list_icon.png';
    static const add='assets/images/add.png';
@@ -18,4 +18,7 @@ class Images{
    static const noData='assets/images/no data.png';
    static const loadingImage='assets/images/upload_image.png';
    static const inventory='assets/images/inventory.png';
+   static const noInternet='assets/images/no internet.png';
+  
+
 }

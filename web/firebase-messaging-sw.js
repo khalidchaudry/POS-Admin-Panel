@@ -4,8 +4,6 @@
 importScripts('/__/firebase/9.2.0/firebase-app-compat.js');
 importScripts('/__/firebase/9.2.0/firebase-messaging-compat.js');
 importScripts('/__/firebase/init.js');
-importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-messaging-compat.js');
 //  Here is is the code snippet to initialize Firebase Messaging in the Service
 //   Worker when your app is not hosted on Firebase Hosting.
 

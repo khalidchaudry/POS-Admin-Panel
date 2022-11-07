@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:uuid/uuid.dart';
 import '../../global_widgets/global_widgets.dart';
+import '../../routes/route_name.dart';
 import '../../utils/utils.dart';
 
 class PhoneFieldScreen extends StatefulWidget {
@@ -37,6 +37,7 @@ bool loading=false;
 // }
   @override
   Widget build(BuildContext context) {
+    var size=MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -46,11 +47,13 @@ bool loading=false;
             padding: const EdgeInsets.all(15),
             
             children: [
-              Image.asset(Images.phoneField),
-               const SizedBox(height: 10,),
-              const Center(child: Text('REGISTER',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),)),
+              Image.asset(Images.phoneField,
+              width: size.width*.1,
+              height: size.height*1,
+              ),
+              const Center(child: Text('LOGIN',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),)),
               const SizedBox(height: 20,),
-              const Text("Enter your phone number to continue, we'll send you OTP to verify",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey),),
+              const Text("Enter your phone number to  verify and continue...",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 20,),
             Container(
               
@@ -76,46 +79,43 @@ bool loading=false;
                   return null;
                 },
                 textFieldController: numberController,
-                selectorConfig: const SelectorConfig(selectorType: PhoneInputSelectorType.BOTTOM_SHEET),
+                selectorConfig: const SelectorConfig(
+                  selectorType: PhoneInputSelectorType.BOTTOM_SHEET),
                 
                 onInputChanged: (PhoneNumber phoneNumber){
                       data=phoneNumber.phoneNumber!;
                   debugPrint('Country Info:${data.toString()}');
-                 
-                 
+               
                 },
                 
                 cursorColor: Colors.green,
                 inputDecoration: const InputDecoration(
                  
                   hintText: 'Phone Number',
+                  hintStyle: TextStyle(fontWeight: FontWeight.bold),
                 border: InputBorder.none
                 ),
                 keyboardType: const TextInputType.numberWithOptions(signed: true,decimal: true),
             initialValue: number,
               ),
             ),
-             SizedBox(height: MediaQuery.of(context).size.height*.3,),
+             SizedBox(height: MediaQuery.of(context).size.height*.1,),
            NeumorphismButtonWidget( press: ()async{
               if (formKey.currentState!.validate()) {
-                String? userId=const Uuid().v4();
                 setState(() {
                 loading=!loading;
               });
-              // await firestore.collection('users').doc().set({
-              //   'userNumber':numberController.text.toString(),
-              // });
-              debugPrint('User ID is: $userId');
+              // if (uid.isNotEmpty) {
+      Navigator.pushNamedAndRemoveUntil(context,RouteName.userData,((route) => false));
+              // }else{
+        //  Navigator.pushNamed(context, RouteName.phoneScreen);
+              // }
+            
               //  if(auth.currentUser!=null){
         // return Navigator.pushNamed(context, RouteName.phoneScreen);
         // }
-
-
    }
-      // Navigator.pushNamedAndRemoveUntil(context,RouteName.userData,((route) => false));
-  //  Navigator.push(context, MaterialPageRoute(builder: (context)=>const BottomNavBar()));
-              //  Navigator.pushNamedAndRemoveUntil(context,RouteName.bottomNavBar,((route) => false));
-   }, color: Colors.white, width: double.infinity, height: 50, radius: 10, isCheck: loading, child: const Text('Request OTP'))
+   }, color: Colors.white, width: double.infinity, height: 50, radius: 10, isCheck: loading, child: const Text('Login',style: TextStyle(fontWeight: FontWeight.bold),))
           ],),
         ),
       ),

@@ -1,20 +1,20 @@
-import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../view/utils/utils.dart';
 
 class InventoryController{
   // Upload Product Image on Firebase Storage
-  firebaseStorage({required File image})async{
+  firebaseStorage({required Uint8List image})async{
  final Reference reference = storage .ref('/Stock/${DateTime.now().toString()}');
-        final UploadTask uploadTask= reference.putFile(image);
+        final UploadTask uploadTask= reference.putData(image);
         TaskSnapshot snapshot=await uploadTask;
         final String downloadUrl=await snapshot.ref.getDownloadURL();
         return downloadUrl;
   }
   // Upload Product Data to Firestore
-  stock ({required String productName,required stock,required companyName,required File? file})async{
+  stock ({required String productName,required stock,required companyName,required Uint8List? file})async{
     try {
       final String imageUrl=await firebaseStorage(image: file!);
      await firestore.collection('inventory').doc(uuid).set({
@@ -35,7 +35,7 @@ class InventoryController{
   }
   // Update Firestore Data
 updateStock ({required String productName,required stock,
-  required companyName,required  id,required File? file,})async{
+  required companyName,required  id,required Uint8List? file,})async{
     try {
       final String imageUrl=await firebaseStorage(image: file!);
      await firestore.collection('inventory').doc(id.toString()).update({

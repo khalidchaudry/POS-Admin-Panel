@@ -5,19 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simplecashier/notification/local_notifi_plugin_service.dart';
 import 'package:simplecashier/provider/provider.dart';
+import 'package:simplecashier/view/screens/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:simplecashier/view/screens/theme/dark_theme.dart';
 import 'package:simplecashier/view/utils/app_colors.dart';
-import 'view/routes/routes.dart';
 import 'view/screens/theme/light_theme.dart';
 
 Future backgroundHandler(RemoteMessage message)async{
   debugPrint('Handling background Message:${message.messageId}');
 }
+  String uid='';
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  
   SharedPreferences sp=await SharedPreferences.getInstance();
   if (kIsWeb) {
     await Firebase.initializeApp(
@@ -31,21 +30,20 @@ Future main() async{
       measurementId: "G-EVFR4HVDPB"
        )
     );
-  }else{
-  await Firebase.initializeApp();
-
-  await FirebaseMessaging.instance.getInitialMessage().then((message) {
+    await FirebaseMessaging.instance.getInitialMessage().then((message) {
     debugPrint('...........Firebase Cloud Messaging...........');
     if (message!=null) {
       debugPrint('New Notification detected');
     }else{
-
+      
     }
   });
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-  LocalNotificationPluginService().initliaze();
+  }else{
+    await Firebase.initializeApp();
   }
-  runApp(MultiProvider(
+  runApp
+  (MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_)=>ThemeProvider(sp:sp)),
       ChangeNotifierProvider(create: (_)=>ProductProvider()),
@@ -66,7 +64,8 @@ class MyApp extends StatelessWidget {
        themeMode: Provider.of<ThemeProvider>(context).themeMode,
        theme: light,
        darkTheme: dark,
-        onGenerateRoute: Routes.routeGenerator,
+       home: const BottomNavBar(),
+        // onGenerateRoute: Routes.routeGenerator,
     );
   }
 }

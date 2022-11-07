@@ -1,8 +1,6 @@
 import '../../controllers/controller.dart';
  // Upload Controller
  UploadController uploadController=UploadController();
-// Pick Image Controller Class
- ImageController imageController=ImageController();
 // cart Controller
 CartController cartController=CartController();
 // Invoice Controller

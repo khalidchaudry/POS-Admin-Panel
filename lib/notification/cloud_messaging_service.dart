@@ -1,15 +1,16 @@
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
-import 'local_notifi_plugin_service.dart';
 
  class ColudMessagingService{
   // get Token
 getToken()async{
-  await FirebaseMessaging.instance.getToken().then((token) {
+  await FirebaseMessaging.instance.getToken(
+    vapidKey: 'BN2Eqp-ZB5Dkrbd1qgcXBq6Fcu8-VGXj4UzNwUMBTjidPZ02e8RnArJu9eawfnnl5NimfId5g0hMEJRaBmPo8G4').then((token) {
           saveToken(token: token);
-    log('My Token is: ${token.toString()}');
+        debugPrint('Requesting permission...');
+  debugPrint('My Token is: ${token.toString()}');
   });
 }
 // save token
@@ -20,16 +21,16 @@ saveToken({required var token})async{
     'tokenDocId':tokenDocId,
   });
 }
-
+// When app is open
   fourGroundMessage(){
     FirebaseMessaging.onMessage.listen(
-      (message) {
-        log("FirebaseMessaging.onMessage.listen");
-        if (message.notification != null) {
-          log(message.notification!.title.toString());
-          log(message.notification!.body.toString());
-          log("Fourground Data: ${message.data}");
-          LocalNotificationPluginService().createanddisplaynotification(message);
+      (RemoteMessage message) {
+        RemoteNotification? notification=message.notification;
+        debugPrint("FirebaseMessaging.onMessage.listen");
+        if (notification != null) {
+          debugPrint(notification.title.toString());
+          debugPrint(notification.body.toString());
+          debugPrint("Fourground Data: ${message.data}");
         }
       },
     );
@@ -38,11 +39,11 @@ saveToken({required var token})async{
    appOpenButInBg(){
      FirebaseMessaging.onMessageOpenedApp.listen(
       (message) {
-        log("FirebaseMessaging.onMessageOpenedApp.listen");
+        debugPrint("FirebaseMessaging.onMessageOpenedApp.listen");
         if (message.notification != null) {
-          log('Message title:${message.notification!.title.toString()}');
-          log('Message body:${message.notification!.body.toString()}');
-          log("Background Data: ${message.data['_id']}");
+          debugPrint('Message title:${message.notification!.title.toString()}');
+          debugPrint('Message body:${message.notification!.body.toString()}');
+          debugPrint("Background Data: ${message.data['_id']}");
         }
       },
     );

@@ -6,9 +6,9 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <smart_auth/smart_auth_plugin.h>
+#include <printing/printing_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  SmartAuthPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("SmartAuthPlugin"));
+  PrintingPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("PrintingPlugin"));
 }

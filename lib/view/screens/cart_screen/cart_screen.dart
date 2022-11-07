@@ -1,54 +1,123 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:printing/printing.dart';
+import 'package:simplecashier/view/screens/cart_screen/widgets/printable_data.dart';
+import 'package:simplecashier/view/screens/invoice_screen/invoice_screen.dart';
 import '../../global_widgets/global_widgets.dart';
 import '../../utils/utils.dart';
-import '../invoice_screen/invoice_screen.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+
 class CartScreen extends StatefulWidget {
-  // final String name;
-  // final String image;
-  // final int quantity;
-  // final double price;
-  // final String id;
-  // const CartScreen({super.key, required this.name, required this.image, required this.quantity, required this.price, required this.id});
+  const CartScreen({super.key});
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
 class _CartScreenState extends State<CartScreen> {
-   final  cartStore=firestore.collection('cart').snapshots();
-   TextEditingController quantityController=TextEditingController();
-double price=0.00;
-int quantity=1;
 int length=0;
-bool textValue=true;
- String itemName = '';
-  String itemImage = ''; 
-  String cartId='';
+List<int> quantity=[];
+List<int> price=[];
+double totalPrice=0.00;
+List<String> name=[];
+final  cartStore=firestore.collection('cart').snapshots();
+// cart length
+cartLegth(){
+   firestore.collection('cart').get().then((value) {
+    if (value.docs.isNotEmpty) {
+     setState(() {
+       length=value.docs.length;
+     });
+    }else{
+      setState(() {
+        length=0;
+      });
+    }
+   });}
+// Grand Total
+grandTotal(){
+   firestore.collection('cart').get().then((value) {
+    int length=value.docs.length;
+    if (value.docs.isNotEmpty) {
+      
+      for (var i=0; i<length; i++) {
+        setState(() {
+   totalPrice+=value.docs[i]['totalPrice'];
+        });
+      }
+    }else{
+      totalPrice=0.00;
+    }
+   });}
+// Product name
+getProductNames(){
+   firestore.collection('cart').get().then((value) {
+    int length=value.docs.length;
+    if (value.docs.isNotEmpty) {
+      
+      for (var i=0; i<length; i++) {
+        setState(() {
+   name.add(value.docs[i]['productName']);
+        });
+      }
+    }
+   });}
+// Quantity
+// getQuantity(){
+//    firestore.collection('cart').get().then((value) {
+//     int length=value.docs.length;
+//     if (value.docs.isNotEmpty) {
+      
+//       for (var i=0; i<length; i++) {
+//         setState(() {
+//    quantity.add(value.docs[i]['quantity']);
+//         });
+//       }
+//     }
+//    });}
+   // Price
+// getPrice(){
+//    firestore.collection('cart').get().then((value) {
+//     int length=value.docs.length;
+//     if (value.docs.isNotEmpty) {
+      
+//       for (var i=0; i<length; i++) {
+//         setState(() {
+//    price.add(value.docs[i]['productPrice']);
+//         });
+//       }
+//     }
+//    });}
+   @override
+  void initState() {
+    getProductNames();
+    grandTotal();
+    // getPrice();
+    // getQuantity();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    cartLegth();
     var size=MediaQuery.of(context).size;
         return Scaffold(
        bottomNavigationBar: Padding(
          padding: const EdgeInsets.all(8.0),
          child: ListTile(
           title: const Text('Total'),
-         subtitle: const Text('Price'),
-         trailing:ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
-            backgroundColor: Colors.green),
-          onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (_)=> InvoiceScreen(invoiceId: cartId,)));
-         }, child: const Text('Make Invoice',style: TextStyle(color: Colors.white),)),
+         subtitle:  Text(totalPrice.toStringAsFixed(2)),
+         trailing: FloatingActionButton(
+                             backgroundColor: Colors.green,
+                             onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=> InvoiceScreen(totalPrice:totalPrice ))),                    
+                           child: const Icon(Icons.print,color: Colors.white,),
+                           )
          ),
        ),
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.green),
         centerTitle: true,
         elevation: .5,
-        title:   const Text('Cart',style: AppColor.appBarTextStyle,),
+        title:    Text('Cart ($length)',style: AppColor.appBarTextStyle,),
       backgroundColor: AppColor.appBarBgColor,
       actions: [IconButton(onPressed: (){
           showSearch(context: context, delegate: SearchDelegateWidget());
@@ -57,8 +126,10 @@ bool textValue=true;
       body:StreamBuilder<QuerySnapshot>(
         stream: cartStore,
         builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+          
           if (snapshot.hasData) {
-            return ListView.builder(
+
+            return snapshot.data!.docs.isNotEmpty?ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 final data=snapshot.data!.docs[index];
@@ -86,51 +157,41 @@ bool textValue=true;
                                    Text(data['productName'].toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
                                    TextButton(onPressed: (){
                                     cartController.deleteItems(cartID: data['cartId'].toString());
-                                    log( '************This ${data['cartId']} product Deleted************');
+                                    debugPrint('************This ${data['cartId']} product Deleted************');
                                    }, child:  const Icon(CupertinoIcons.delete_left,color: Colors.red,))
                                  ],
                                ),
                                SizedBox(height:size.height*.04),
-                              textValue? Text(data['productPrice'].toString(),style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.blueGrey),):
-                              Text((quantity*data['productPrice']).toStringAsFixed(2),style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.blueGrey),),
-                              SizedBox(height:size.height*.02),
-                               SizedBox(
-                                width: size.width*.5,
-                                height: 50,
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  controller: quantityController,
-                                  decoration:   InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    hintText: 'Quantity',
-                                    border:  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                                    suffixIcon: TextButton(onPressed: (){
-                                      setState(() {
-                                        quantity=int.parse(quantityController.text.toString());
-                                        // price=(data['productPrice'])*int.parse(data['quantity'].toString());
-                                  textValue=!textValue;
-                             cartController.updateCart(updateId:  data['cartId'].toString(),quantity: int.parse(quantityController.text.toString()));
-                             quantityController.clear();
-                                  });
-                                    }, child: const Text('ADD')
-                                  ),
-                                ),
-                              )),
-                           
+                          Text('${data['quantity']} X ${data['productPrice']} = ${data['totalPrice']} SAR'.toString(),style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.blueGrey),),
                             ],),
                           ),
                         ],
                       ),
                     );
-            });
-          }else{
-            return const Center(child: CircularProgressIndicator(),);
+            }):Center(child: Image.asset(Images.noInternet),);
+          }
+          else{
+            return const Center(child: CircularProgressIndicator(backgroundColor: Colors.green,),);
           }
           
         }
       ),
     );
   }
-
+  
+  // Printer 
+ Future<void> printDoc() async {
+    var  image = imageFromAssetBundle(
+    Images.inventory
+    );
+    final doc = pw.Document();
+    doc.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return 
+          buildPrintableData(image:image ,length: length,name: name,totalPrice: totalPrice);
+        }));
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => doc.save());
+  }
 }

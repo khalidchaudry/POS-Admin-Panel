@@ -56,24 +56,24 @@ bool showList=false;
         builder: (context, snapshot) {
           bool isCheck=false;
           if (snapshot.hasData) {
-            return showList? ListView.builder(
+            return showList? snapshot.data!.docs.isNotEmpty?ListView.builder(
               
               itemCount:snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
       
                 final listData=snapshot.data!.docs[index];
                
-                return ListTileWidget(image: listData['ProductImage'], productName: 'Name: ', companyName: '', stockQuantity: 'Price: ',
+                return ListTileWidget(image: listData['ProductImage'], productName: 'Name: ', companyName: 'Desc: ', stockQuantity: 'Price: ',
                  press: (){
                   setState(() {
                     isCheck=!isCheck;
                   });
-                 }, isCheck: isCheck, id: listData['id'], companyName2: '', productName2: listData['ProductName'], stockQuantity2: listData['ProductPrice'].toString());
+                 }, isCheck: isCheck, id: listData['id'], companyName2: listData['ProductDesc'], productName2: listData['ProductName'], stockQuantity2: listData['ProductPrice'].toString());
                 
-                })
-      :GridView.builder(
+                }):Center(child: Image.asset(Images.noInternet),)
+      :snapshot.data!.docs.isNotEmpty?GridView.builder(
           gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: isPortrait?3:4,
+            crossAxisCount: isPortrait?3:5,
                   mainAxisExtent: isPortrait?customSize.height*.24:customSize.height*.56,
           ),
           itemCount:snapshot.data!.docs.length,
@@ -84,13 +84,14 @@ bool showList=false;
                                   id: gridData['id'],
                                   image:gridData['ProductImage']
                                   ,productName: gridData['ProductName'], desc: gridData['ProductDesc'],
-                                   productPrice: gridData['ProductPrice'],barcode: gridData['ProductBarcode'],)
+                                   productPrice: gridData['ProductPrice'])
                                    )),
 
               longPress:() => uploadController.deleteItems( id: gridData['id']), 
+              desc: gridData['ProductDesc'],
               image: gridData['ProductImage'], name: gridData['ProductName'], price: gridData['ProductPrice']);
             
-            });
+            }):Center(child: Image.asset(Images.noInternet),);
           }else{
             return const Center(child: CircularProgressIndicator.adaptive(backgroundColor: Colors.green,),);
           }

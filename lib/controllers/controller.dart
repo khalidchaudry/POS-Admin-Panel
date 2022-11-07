@@ -1,4 +1,3 @@
-export 'image_controller.dart';
 export 'cart_controller.dart';
 export 'company_details_controller.dart';
 export 'invoice_controller.dart';

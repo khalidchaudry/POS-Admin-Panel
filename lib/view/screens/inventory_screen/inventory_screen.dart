@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:simplecashier/view/screens/inventory_screen/widgets/widget.dart';
 import '../../global_widgets/global_widgets.dart';
 import '../../routes/route_name.dart';
 import '../../utils/utils.dart';
+import 'widgets/edit_inventory_items_widget.dart';
 
 class InventoryScreen extends StatefulWidget {
    const InventoryScreen({super.key});
@@ -59,12 +59,13 @@ bool showList=false;
         stream: itemsDB,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return showList? ListView.builder(             
+            return showList? snapshot.data!.docs.isNotEmpty?ListView.builder(             
               itemCount:snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
                 final listData=snapshot.data!.docs[index];
                bool isCheck=false;
-                return ListTileWidget(image: listData['stockImage'], productName2: listData['ProductName'], companyName2: listData['companyName'],
+                return ListTileWidget(image: listData['stockImage'], productName2: listData['ProductName'], 
+                companyName2: listData['companyName'],
                 productName: 'Name: ',
                 companyName: 'Company: ',
                 stockQuantity: 'Stock: ',
@@ -74,8 +75,8 @@ bool showList=false;
                   });
                  }, isCheck: isCheck, id: listData['id']);
                 
-                })
-      :GridView.builder(
+                }):Center(child: Image.asset(Images.noInternet),)
+      :snapshot.data!.docs.isNotEmpty?GridView.builder(
           gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: isPortrait?3:4,
                   mainAxisExtent: isPortrait?customSize.height*.24:customSize.height*.56,
@@ -88,15 +89,16 @@ bool showList=false;
                                   image:gridData['stockImage']
                                   ,productName: gridData['ProductName'], companyName: gridData['companyName'],
                                    stock: gridData['stockQuantity'])
-                                   )), longPress: ()=>uploadController.deleteItems( id: gridData['id']), 
-                                   image: gridData['stockImage'], name: gridData['ProductName'], price: gridData['stockQuantity']);
-            });
+                                   )), 
+
+                                   longPress: ()=>uploadController.deleteItems( id: gridData['id']), 
+                                   image: gridData['stockImage'], desc: '',name: gridData['ProductName'], price: gridData['stockQuantity']);
+            }):Center(child: Image.asset(Images.noInternet),);
           }else{
             return const Center(child: CircularProgressIndicator.adaptive(backgroundColor: Colors.green,),);
           }
             })
 
     );
-    // :const NoProductWidget(image: Images.noData);
   });
 }

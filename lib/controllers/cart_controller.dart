@@ -4,7 +4,7 @@ import '../view/utils/utils.dart';
 
 class CartController{
   // Add to cart
-  addCart({required String productName,productImage,required double productPrice,required int quantity})async{
+  addCart({required String productName,productImage,required gst,required discount,required double productPrice,required int quantity,})async{
             final String cartId=const Uuid().v4();
       try {
         await firestore.collection('cart').doc(cartId).set({
@@ -12,7 +12,10 @@ class CartController{
             'productPrice':double.parse(productPrice.toString()),
             'productImage':productImage,
             'cartId':cartId,
-            'quantity':quantity,
+            'quantity':int.parse(quantity.toString()),
+            'discount':int.parse(discount.toString()),
+            'gst':gst,
+            'totalPrice':quantity*double.parse(productPrice.toString()),
           });
           fluttertoast(message: 'Add to cart successfully');
       } catch (e) {
@@ -33,7 +36,8 @@ fluttertoast(message: e.toString());    }
       try {
         await firestore.collection('cart').doc(updateId).update({
             'quantity':int.parse(quantity.toString()),
-            // 'productPrice':double.parse(productPrice.toString()),
+            // 'totalPrice':quantity*double.parse(productPrice.toString()),
+
           });
           fluttertoast(message: 'Cart Updated');
       } catch (e) {

@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../global_widgets/global_widgets.dart';
 import '../../../utils/utils.dart';
 
@@ -16,22 +16,9 @@ class EditInventoryItemsScreen extends StatefulWidget {
 }
 class _EditInventoryScreenState extends State<EditInventoryItemsScreen> {
 final fireStore=FirebaseFirestore.instance.collection('users');
-File? image;
 bool loading =false;
  String code='';
- imagePickFromCamera()async{
-final pickImageFromCamera=await imageController.imagePicker(source: ImageSource.camera, context: context);
-setState(() {
-  image=pickImageFromCamera;
-});
- }
-  // Image Pick from Gallery
-  imagePickFromGallery()async{
-final pickImageFromCamera=await imageController.imagePicker(source: ImageSource.gallery, context: context);
-setState(() {
-  image=pickImageFromCamera;
-});
- }
+ Uint8List? image;
 TextEditingController? productNameController;
 TextEditingController? stockController;
 TextEditingController? companyNameController;
@@ -55,7 +42,46 @@ super.initState();
     companyNameController?.dispose();
     super.dispose();
   }
-
+  
+ // Image Picker
+String fileName='';
+ Uint8List? filePicker;
+ selectFile() async {
+    FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
+    if (fileResult != null) {
+      setState(() {
+        filePicker = fileResult.files.first.bytes;
+        fileName=fileResult.files.first.name;
+      });
+    }
+    debugPrint(fileName.toString());
+  }
+ NeumorphicButtonWidget pickImageMethod(bool isImageValue, BuildContext context, Size size) {
+  bool galleryValue=false;
+    return NeumorphicButtonWidget(
+           color: Colors.transparent,
+       isCheck: isImageValue,
+          press: () { 
+          },
+           child:NeumorphicButtonWidget(isCheck: galleryValue,
+                   color: Colors.transparent,
+                  press:(){
+                    selectFile();
+                  },
+          child: Column(
+            children: [
+ 
+ filePicker==null?
+ Image.asset(Images.pickImage,height: 150,width: double.infinity,):
+ Image.memory(filePicker!,height: 150,width: double.infinity),
+ const SizedBox(height: 5,),
+ const Text('Add your company logo',style: TextStyle(color:Colors.grey,)),
+const SizedBox(height: 5,),
+ const Text('Best image dimensions is 320x650 px',style: TextStyle(color:Colors.grey,))
+            ],
+          ),
+    ));
+  }
  
  @override
   Widget build(BuildContext context) {
@@ -80,7 +106,7 @@ super.initState();
         child: Padding(padding: const EdgeInsets.all(20),child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children:  [
-            pickImageMethod(isImageValue, context, size),
+        pickImageMethod(isImageValue, context, size),
          sizedBoxheight,
          TextFieldWidget(
           keyboardType: TextInputType.text,
@@ -110,7 +136,7 @@ await inventoryController.updateStock(
 productName: productNameController!.text.toString(),
    stock:stockController!.text.toString(),
     companyName: companyNameController!.text.toString(),
-      file: image,
+      file: filePicker,
       id: widget.id.toString()
       );
       setState(() {
@@ -126,60 +152,4 @@ productName: productNameController!.text.toString(),
     );
   }
 
-  NeumorphicButtonWidget pickImageMethod(bool isImageValue, BuildContext context, Size size) {
-    return NeumorphicButtonWidget(
-           color: Colors.transparent,
-       isCheck: isImageValue,
-          press: () { 
-            showDialog(context: context, builder: (_){
-                 final dialogHeight=SizedBox(height: size.height*.02,);
-              bool cameraValue=false;
-                 bool galleryValue=false;
-                 bool cancel=false;
-              return SimpleDialog(
-                
-             contentPadding: const EdgeInsets.all(10),
-                children: [
-                   const Text('How do you want to choose product picture',
-                   textAlign: TextAlign.center,
-                   style: TextStyle(color:Colors.grey,)),
-                   dialogHeight,
-                  NeumorphicButtonWidget(isCheck: cameraValue,
-                   color: Colors.transparent,
-                  press: () {  
-                    imagePickFromCamera();
-                    Navigator.pop(context);
-                  },
-                  child:  const Text('Using Camera',textAlign: TextAlign.center,),),
-                  dialogHeight,
-                  NeumorphicButtonWidget(isCheck: galleryValue,
-                   color: Colors.transparent,
-                  press:(){
-                    imagePickFromGallery();
-                     Navigator.pop(context);
-                  },
-                  child:  const Text('Using Device Storage',textAlign: TextAlign.center,),),
-                  dialogHeight,
-                   NeumorphicButtonWidget(isCheck: cancel,
-                   color: Colors.transparent,
-                  press: ()=>Navigator.pop(context),
-                  child:  const Text('Cancel',textAlign: TextAlign.center,),),
-                ],
-              );
-            });
-           },
-          child: Column(
-            children: [
- 
- image==null?
- Image.network(widget.image,height: 150,fit: BoxFit.cover,width: double.infinity,):
- Image.file(image!,height: 150,fit: BoxFit.cover,width: double.infinity),
- const SizedBox(height: 7,),
- const Text('Update Stock Image',style: TextStyle(color:Colors.grey,)),
-const SizedBox(height: 3,),
- const Text('Best image dimensions is 320x650 px',style: TextStyle(color:Colors.grey,))
-            ],
-          ),
-        );
-  }
 }

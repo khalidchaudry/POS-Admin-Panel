@@ -1,11 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/utils.dart';
+
 class GridViewWidget extends StatelessWidget {
-  const GridViewWidget({super.key, required this.press, required this.longPress, required this.image, required this.name, required this.price});
+  const GridViewWidget({super.key, required this.press, required this.longPress, required this.image, required this.name, required this.price, required this.desc});
 final Function() press;
 final Function() longPress;
-final String image,name;
+final String image,name,desc;
 final dynamic price;
   @override
   Widget build(BuildContext context) {
@@ -31,17 +33,15 @@ final dynamic price;
                                                     children:  [
                                                     ClipRRect(
                                                       borderRadius:  const BorderRadius.only(topLeft: Radius.circular(50),bottomRight: Radius.circular(20),bottomLeft: Radius.circular(20),),
-                                                      child: Image.network(image,
-                                                     width: double.infinity,
-                                                     errorBuilder: (context, error, stackTrace) => Image.asset(Images.loadingImage),
-                                                  
-                                                        height: MediaQuery.of(context).size.height*.15
-                                                        ,
-                                                        fit: BoxFit.cover,
+                                                      child: CachedNetworkImage(imageUrl: image,
+                                                      progressIndicatorBuilder: (context, url, downloadProgress) => 
+                CircularProgressIndicator(value: downloadProgress.progress),
+                 errorWidget: (context, url, error) =>  Image.asset(Images.loadingImage),
                                                       ),
                                                     ),
                                                     SizedBox(height: customSize.height*.01,),
                                                     Text(name,style: const TextStyle(color: Colors.black),),
+                                                  Text(desc,style: const TextStyle(color: Colors.black),),
                                                   Text(price.toString(),style: const TextStyle(color: Colors.black)),
                                                                     ])),
               ),

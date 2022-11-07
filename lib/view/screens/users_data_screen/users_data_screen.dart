@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:simplecashier/view/routes/route_name.dart';
 import 'package:simplecashier/view/utils/utils.dart';
 
@@ -10,7 +10,6 @@ import '../../global_widgets/global_widgets.dart';
 
 class UserDataScreen extends StatefulWidget {
    const UserDataScreen({super.key});
-
   @override
   State<UserDataScreen> createState() => _UserDataScreenState();
 }
@@ -18,7 +17,6 @@ class UserDataScreen extends StatefulWidget {
 class _UserDataScreenState extends State<UserDataScreen> {
   
 final fireStore=FirebaseFirestore.instance.collection('users');
- File? image;
 bool loading =false;
 Color color=Colors.green;
  
@@ -36,21 +34,20 @@ TextEditingController addressController=TextEditingController();
     addressController.dispose();
     super.dispose();
   }
+  // Image Picker
+String fileName='';
+ Uint8List? filePicker;
+ selectFile() async {
+    FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
+    if (fileResult != null) {
+      setState(() {
+        filePicker = fileResult.files.first.bytes;
+        fileName=fileResult.files.first.name;
+      });
+    }
+    debugPrint(fileName.toString());
+  }
 
- // Image Pick from camera
- imagePickFromCamera()async{
-final pickImageFromCamera=await imageController.imagePicker(source: ImageSource.camera, context: context);
-setState(() {
-  image=pickImageFromCamera;
-});
- }
-  // Image Pick from Gallery
-  imagePickFromGallery()async{
-final pickImageFromGallery=await imageController.imagePicker(source: ImageSource.gallery, context: context);
-setState(() {
-  image=pickImageFromGallery;
-});
- }
   @override
   Widget build(BuildContext context) =>OrientationBuilder(builder: (context, orientation) {
     final isPortrait=orientation==Orientation.portrait;
@@ -97,7 +94,8 @@ setState(() {
           SizedBox(
             width: double.infinity,
             child: NeumorphicButtonWidget(isCheck: addBtnBool, press: ()async{
-              if (image!=null&&companyNameController.text.isNotEmpty && userNameController.text.isNotEmpty && 
+              
+              if (companyNameController.text.isNotEmpty && userNameController.text.isNotEmpty && 
               lienceNumberController.text.isNotEmpty && addressController.text.isNotEmpty) {
                  setState(() {
       loading=true;
@@ -107,12 +105,12 @@ await companyController.companyData(
    companyName: companyNameController.text,
     licenseNumber: lienceNumberController.text,
      address: addressController.text,
-      file: image
+      file: filePicker
       );
-            Navigator.pushNamed(context, RouteName.bottomNavBar);
       setState(() {
         loading=false;
       });
+      Navigator.pushNamedAndRemoveUntil(context,RouteName.bottomNavBar,((route) => false));
               }else{
                  flushBarErrorMessage('Please fill all fields', context);
               }
@@ -121,7 +119,6 @@ await companyController.companyData(
             }, color: AppColor.navBarBxColor, child:loading?const Center(child: CircularProgressIndicator(backgroundColor: AppColor.appBarBgColor,)):const Text('ADD',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)),
           ),
          
-          
         ],),),
       )),
     );
@@ -129,61 +126,29 @@ await companyController.companyData(
 
 
  NeumorphicButtonWidget pickImageMethod(bool isImageValue, BuildContext context, Size size) {
+  bool galleryValue=false;
     return NeumorphicButtonWidget(
            color: Colors.transparent,
        isCheck: isImageValue,
           press: () { 
-            showDialog(context: context, builder: (_){
-                 final dialogHeight=SizedBox(height: size.height*.02,);
-              bool cameraValue=false;
-                 bool galleryValue=false;
-                 bool cancel=false;
-              return SimpleDialog(
-                
-             contentPadding: const EdgeInsets.all(10),
-                children: [
-                   const Text('How do you want to choose your company logo',
-                   textAlign: TextAlign.center,
-                   style: TextStyle(color:Colors.grey,)),
-                   dialogHeight,
-                  NeumorphicButtonWidget(isCheck: cameraValue,
+          },
+           child:NeumorphicButtonWidget(isCheck: galleryValue,
                    color: Colors.transparent,
-                  press: () {  
-                    imagePickFromCamera();
-                    Navigator.pop(context);
+                  press:()async{
+                selectFile();
                   },
-                  child:  const Text('Using Camera',textAlign: TextAlign.center,),),
-                  dialogHeight,
-                  NeumorphicButtonWidget(isCheck: galleryValue,
-                   color: Colors.transparent,
-                  press:(){
-                    imagePickFromGallery();
-                     Navigator.pop(context);
-                  },
-                  child:  const Text('Using Device Storage',textAlign: TextAlign.center,),),
-                  dialogHeight,
-                   NeumorphicButtonWidget(isCheck: cancel,
-                   color: Colors.transparent,
-                  press: ()=>Navigator.pop(context),
-                  child:  const Text('Cancel',textAlign: TextAlign.center,),),
-                ],
-              );
-            });
-           },
           child: Column(
             children: [
- 
- image==null?
+
+ filePicker==null?
  Image.asset(Images.pickImage,height: 150,width: double.infinity,):
- Image.file(image!,height: 150,width: double.infinity),
+ Image.memory(filePicker!,height: 150,width: double.infinity),
  const SizedBox(height: 5,),
  const Text('Add your company logo',style: TextStyle(color:Colors.grey,)),
 const SizedBox(height: 5,),
- const Text('Best image dimensions is 320x650 px',style: TextStyle(color:Colors.grey,))
+ const Text('Best filePicker dimensions is 320x650 px',style: TextStyle(color:Colors.grey,))
             ],
           ),
-        );
+    ));
   }
   }
-
- 

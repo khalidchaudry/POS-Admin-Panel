@@ -3,10 +3,10 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:simplecashier/notification/permision_handler.dart';
 import 'package:simplecashier/provider/provider.dart';
+import 'package:simplecashier/view/screens/cart_screen/cart_screen.dart';
 import 'package:simplecashier/view/utils/utils.dart';
 import '../../../notification/cloud_messaging_service.dart';
 import '../../global_widgets/global_widgets.dart';
-import '../cart_screen/cart_screen.dart';
 
  
 class HomeScreen extends StatefulWidget {
@@ -37,20 +37,44 @@ class _HomeScreenState extends State<HomeScreen> {
  bool decrementButtonValue=false;
  bool incrementButtonValue=false;
  bool barcodeValue=false;
+ 
 //   Controller
- TextEditingController controller=TextEditingController();
+ TextEditingController discountController=TextEditingController();
+TextEditingController gstController=TextEditingController();
  // Firebase
 final fireStoreSnapshot =firestore.collection('products').snapshots();
+// get UID
+  String uid='';
+  String cartId='';
+//   getUid()async{
+// await firestore.collection('users').get().then((value) {
+//   for (var i = 0; i < value.docs.length; i++) {
+//     uid=value.docs[i]['uid'];
+//   }
+// });
+// debugPrint(uid);
+
+//   }
+  // get Cart Id
+   getCartUid()async{
+await firestore.collection('cart').get().then((value) {
+  for (var i = 0; i < value.docs.length; i++) {
+    cartId=value.docs[i]['cartId'];
+  }
+});
+debugPrint('Cart Id is#: $cartId');
+  }
 @override
   void initState() {
     PermissionHandler().getPermission();
-    ColudMessagingService().getToken();
     ColudMessagingService().fourGroundMessage();
     ColudMessagingService().appOpenButInBg();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
+    getCartUid();
    final size= MediaQuery.of(context).size;
     var theme=Provider.of<ThemeProvider>(context);
     var nightClick=theme.darkTheme;
@@ -62,7 +86,7 @@ final fireStoreSnapshot =firestore.collection('products').snapshots();
         return Scaffold(
         
         floatingActionButton: FloatingActionButton(
-        onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  CartScreen())), tooltip: 'Go to cart',
+        onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>  const CartScreen())), tooltip: 'Go to cart',
         child: const Icon(Icons.shopping_cart)),
         appBar: AppBar(
           elevation: 0,
@@ -138,12 +162,11 @@ final fireStoreSnapshot =firestore.collection('products').snapshots();
                   stream: fireStoreSnapshot,
                   builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
-                      return GridView.builder(
+                      return snapshot.data!.docs.isNotEmpty?GridView.builder(
                                shrinkWrap: true,
                         gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: isPortrait?3:5,
-                              mainAxisSpacing: customSize.height*.0199,
-                              crossAxisSpacing: customSize.width*.0199,
+                              
                       mainAxisExtent: isPortrait?customSize.height*.24:customSize.height*.56,
                         ),
                         itemCount:
@@ -152,14 +175,103 @@ final fireStoreSnapshot =firestore.collection('products').snapshots();
                          
                               final data=snapshot.data!.docs[index];
                               debugPrint(snapshot.data!.docs[index].toString());
-                              return GridViewWidget(press: ()=>cartController .addCart(productName: data['ProductName'],
-                                  quantity: quantity,
-                                   productPrice: data['ProductPrice'],productImage: data['ProductImage']), longPress:() => uploadController.deleteItems(id: data['id']),
-image: data['ProductImage'], name: data['ProductName'], price: data['ProductPrice'],
+                              return GridViewWidget(press: (){
+                             showDialog(context: context, builder: (_){
+                   final dialogHeight=SizedBox(height: size.height*.02,);
+                bool cameraValue=false;
+              
+                return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {  
+                    return SimpleDialog(
+                    
+                               contentPadding: const EdgeInsets.all(10),
+                    children: [
+                        Text('purchase ${data['ProductName']}',
+                       textAlign: TextAlign.center,
+                       style: const TextStyle(color:Colors.black,fontWeight: FontWeight.bold)),
+                       dialogHeight,
+    Text('$quantity X ${data['ProductPrice']} = ${quantity*data['ProductPrice']} SAR'.toString(),textAlign: TextAlign.center,style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.blueGrey),),
+                               dialogHeight,
+                               Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                           NeumorphicButtonWidget(press: (){
+                            if (quantity>1) {
+                               setState(() {
+                                             quantity--;
+                    });
+                            }
+                   
+                  }, color: Colors.transparent, isCheck: decrementButtonValue, child: const Text('-',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20))),
+                               const SizedBox(width: 5,),
+                  Text(quantity.toString()),
+                  const SizedBox(width: 5,),
+                  NeumorphicButtonWidget(press: (){
+                    setState(() {
+                     quantity++;
+                    });
+                  }, color: Colors.transparent, isCheck: incrementButtonValue, child:const Text('+',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
+                  
+                         
+                               ],),
+                               dialogHeight,
+                               SizedBox(
+                                height: 50,
+                                 child: TextFieldWidget(
+                                          keyboardType: TextInputType.number,
+                                         moveNextField: TextInputAction.done,
+                                         hintText: 'Discount in %', boolCheck: true, controller: discountController),
+                               ),
+           dialogHeight,
+                               SizedBox(
+                                height: 50,
+                                 child: TextFieldWidget(
+           keyboardType: TextInputType.number,
+          moveNextField: TextInputAction.done,
+          hintText: 'GST in %', boolCheck: true, controller: gstController),
+                               ),
+                     dialogHeight,
+                      NeumorphicButtonWidget(isCheck: cameraValue,
+                       color: Colors.transparent,
+                      press: () {  
+                        if (gstController.text.isEmpty || discountController.text.isEmpty) {
+                           cartController .addCart(productName: data['ProductName'],
+                                    quantity: quantity,
+                                     productPrice: data['ProductPrice'],
+                                     productImage: data['ProductImage'],
+                                     discount: 1,
+                                     gst: 1
+                                     );
+                        }else{
+                           cartController .addCart(productName: data['ProductName'],
+                                    quantity: quantity,
+                                     productPrice: data['ProductPrice'],
+                                     productImage: data['ProductImage'],
+                                     discount: discountController.text.toString(),
+                                     gst: gstController.text.toString()
+                                     );
+                        }
+                       
+
+                               discountController.clear();
+                               gstController.clear();
+                        Navigator.pop(context);},
+                      child:  const Text('Add',textAlign: TextAlign.center,),),
+                     
+                    ],
+                  );
+                  },
+                );
+              });
+                                
+                              },
+                                    longPress:() => uploadController.deleteItems(id: data['id']),
+                                    desc: data['ProductDesc'],
+                                    image: data['ProductImage'], name: data['ProductName'], price: data['ProductPrice'],
             
             );
                 
-                      });
+                      }): Center(child:Image.asset(Images.noInternet),);
                     }else{
                       return const Center(child: CircularProgressIndicator(),);
                     }
